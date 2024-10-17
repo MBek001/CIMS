@@ -1,0 +1,170 @@
+
+import os
+from pathlib import Path
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'django-insecure-hr97o=79_3pargo@n7d5t2tv@0qj@f#au516$1^wrhl!mnk6u&'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+ALLOWED_HOSTS = ["*"]
+
+
+# Application definition
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    #custom
+    'cims',
+    'main',
+    'logistic',
+    'telegram',
+    'consulting',
+    'ceo',
+    'service'
+]
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+ROOT_URLCONF = 'cims.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates']
+        ,
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'cims.wsgi.application'
+
+
+AUTHENTICATION_BACKENDS = [
+    'main.auth_backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cims$default',
+        'USER': 'cims',
+        'PASSWORD': '5498603Ma.',
+        'HOST': 'cims.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
+    },
+    'logistic': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'tuya$moment-logistics',
+        'USER': 'tuya',
+        'PASSWORD': 'tuyadatabases',
+        'HOST': 'tuya.mysql.pythonanywhere-services.com',
+        'PORT': '3306'
+    },
+    'telegram': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'tuya$test-bot-prod',
+        'USER': 'tuya',
+        'PASSWORD': 'tuyadatabases',
+        'HOST': 'tuya.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
+    },
+    'consulting': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'tuya$erixconsulting',
+        'USER': 'tuya',
+        'PASSWORD': 'tuyadatabases',
+        'HOST': 'tuya.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
+    },
+
+
+}
+
+
+# Password validation
+# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+
+
+
+# settings.py
+AUTH_USER_MODEL = 'main.User'
+
+LOGIN_URL = '/login/'
+
+
+# Internationalization
+# https://docs.djangoproject.com/en/5.1/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'Asia/Tashkent'
+USE_TZ = True
+
+USE_I18N = True
+
+
+
+LOGIN_URL = '/'
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.1/howto/static-files/
+
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
