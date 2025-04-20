@@ -184,7 +184,6 @@ def service_messages(request):
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
 
-from  requests import  request
 
 @csrf_exempt
 @login_required
