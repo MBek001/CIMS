@@ -188,3 +188,70 @@ def user_dashboard(request, company_code):
         return redirect('consulting')
     else:
         return redirect('default_dashboard')
+
+
+
+
+
+
+
+
+
+from django.shortcuts import render
+from main.models import Payment
+
+
+from django.http import JsonResponse
+
+def payments_view(request):
+    if request.method == "POST":
+        # Add Payment
+        if 'add_payment' in request.POST:
+            project_name = request.POST.get('project_name')
+            date = request.POST.get('date')
+            summ = request.POST.get('summ')
+            if project_name and date and summ:
+                payment = Payment.objects.create(
+                    project=project_name,
+                    date=date,
+                    summ=summ,
+                )
+
+
+                return  redirect('payment_list')
+
+        # Delete Payment
+        if 'delete_payment' in request.POST:
+            payment_id = request.POST.get('id')
+            if payment_id and payment_id.isdigit():
+                Payment.objects.filter(id=payment_id).delete()
+                return JsonResponse({'status': 'success'})
+            return JsonResponse({'status': 'error', 'message': 'Invalid payment ID.'})
+
+        # Toggle Payment Status
+        if 'toggle_payment' in request.POST:
+            payment_id = request.POST.get('id')
+            if payment_id and payment_id.isdigit():
+                payment = Payment.objects.filter(id=payment_id).first()
+                if payment:
+                    payment.payment = not payment.payment
+                    payment.save()
+                    return JsonResponse({
+                        'status': 'success',
+                        'payment': {
+                            'id': payment.id,
+                            'project': payment.project,
+                            'date': payment.date,
+                            'summ': payment.summ,
+                            'payment': payment.payment
+                        }
+                    })
+            return JsonResponse({'status': 'error', 'message': 'Invalid payment ID.'})
+
+    # Get Payments
+    payments = Payment.objects.all()
+    return render(request, 'ceo_payment.html', {'payments': payments})
+
+
+
+

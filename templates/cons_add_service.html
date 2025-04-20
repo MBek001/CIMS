@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .form-control {
+        background-color: #191C24;
+        color: white;
+        border: 1px solid #555;
+    }
+
+    .form-control:focus {
+        background-color: #191C24;
+        color: white;
+        border-color: #e75228;
+        box-shadow: none;
+    }
+
+    label.form-label {
+        color: white;
+    }
+
+    button.btn {
+        background-color: #c91212;
+        border-color: #da1818;
+    }
+
+    button.btn:hover {
+        background-color: #d83e2d;
+        border-color: #ad1919;
+    }
+</style>
+
+
+<div class="container-fluid position-relative d-flex p-0">
+    <!-- Sidebar Start -->
+    <div class="sidebar pe-4 pb-3">
+        <nav class="navbar bg-secondary navbar-dark">
+            <a href="http://cognilabs.org/" class="navbar-brand mx-4 mb-3" target="_blank">
+                <h3 class="text-primary">Cognilabs</h3>
+            </a>
+            <div class="d-flex align-items-center ms-4 mb-4">
+                <div class="position-relative">
+                    <img class="rounded-circle" src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg" alt="" style="width: 40px; height: 40px;">
+                    <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                </div>
+                <div class="ms-3">
+                    <h6 class="mb-0">{{ user.name }}</h6>
+                    <span>{{ user.email }}</span>
+                </div>
+            </div>
+            <div class="navbar-nav w-100">
+            <a href="{% url 'consulting' %}" class="nav-item nav-link active">Dashboard</a>
+                <a href="{% url  'consusers' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Users</a>
+                <a href="{% url  'conschatrequests' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Chat Request</a>
+                   <a href="{% url  'conshistory' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Request History</a>
+                <a href="{% url  'consteammemberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Team Members</a>
+                <a href="{% url  'consservices' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Services</a>
+                <a href="{% url  'conscomments' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Comments</a>
+                <a href="{% url  'consblogposts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Blogs</a>
+<a href="{% url  'addteammembership' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>+ Teammebers</a>
+<a href="{% url  'consaddservice' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i> + Service</a>
+            </div>
+        </nav>
+    </div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+            <!-- Navbar content here -->
+        </nav>
+        <div class="container mt-4">
+            <h1 class="mb-4">Add New Service</h1>
+            <form method="POST" action="{% url 'consaddservice' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="name" class="form-label">Service Name:</label>
+                    <input type="text" class="form-control" name="name" id="name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <textarea class="form-control" name="description" id="description" rows="3" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Add Service</button>
+            </form>
+        </div>
+
+
+    </div>
+    <!-- Content End -->
+</div>
+
+{% endblock %}

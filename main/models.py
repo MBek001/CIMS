@@ -59,3 +59,12 @@ class Message(models.Model):
 
     def __str__(self):
         return f"Message from {self.sender} to {self.receiver}"
+
+
+
+class Payment(models.Model):
+    project=models.CharField(max_length=100)
+    date=models.CharField(max_length=50)
+    summ=models.CharField(max_length=100)
+    payment=models.BooleanField(default=True)
+

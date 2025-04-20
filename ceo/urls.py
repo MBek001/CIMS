@@ -1,4 +1,4 @@
-from  ceo import views
+from  ceo import views,wordpres_projects_view
 from django.urls import path
 
 
@@ -12,6 +12,10 @@ urlpatterns = [
     path('messagesceo/',views.message_list_ceo,name='message_list_ceo'),
     path('dashboard/<str:company_code>/', views.user_dashboard, name='user_dashboard'),
     path('message/send-to-all/', views.send_message_all, name='send_message_to_all'),
-    path('toggle_user_active/', views.toggle_user_active, name='toggle_user_active')
+    path('toggle_user_active/', views.toggle_user_active, name='toggle_user_active'),
+    path('payments/', views.payments_view, name='payment_list'),
+    path('project-toggle/', wordpres_projects_view.project_toggle_view, name='project_toggle'),
+    path('api/site-status/', wordpres_projects_view.site_status),
+
 
 ]

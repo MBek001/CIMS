@@ -43,7 +43,7 @@
   /* Adjust as needed */
  /* Remove any extra margin-top */
         position: absolute;
-       
+
     }
 
     .navbar {
@@ -55,11 +55,11 @@
         padding: 0;
         margin: 0;
     }
-    
-   
-    
-    
-    
+
+
+
+
+
 </style>
 
 <body>
@@ -146,9 +146,12 @@
     </nav>
 </div>
 
-<!-- Main content block -->
-{% block content %}
-{% endblock %}
+<div class="content">
+    ...
+    {% block content %}
+    {% endblock %}
+</div>
+
 
 <!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

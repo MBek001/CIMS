@@ -1,178 +1,273 @@
+
+
+
+
+
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block content %}
-    <div class="container-fluid position-relative d-flex p-0">
+<div class="container-fluid position-relative d-flex p-0">
 
-
-        <!-- Sidebar Start -->
-        <div class="sidebar pe-4 pb-3">
-            <nav class="navbar bg-secondary navbar-dark">
-                <a href="http://cognilabs.org/" class="navbar-brand mx-4 mb-3" target="_blank">
-                    <h3 class="text-primary">Cognilabs</h3>
-                </a>
-                <div class="d-flex align-items-center ms-4 mb-4">
-                    <div class="position-relative">
-                        <img class="rounded-circle" src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg" alt="" style="width: 40px; height: 40px;">
-                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
-                    </div>
-                    <div class="ms-3">
-                        <h6 class="mb-0">{{ user.name }}</h6>
-                        <span>{{ user.email}}</span>
-                    </div>
+    <!-- Sidebar Start -->
+    <div class="sidebar pe-4 pb-3">
+        <nav class="navbar bg-secondary navbar-dark">
+            <a href="http://cognilabs.org/" class="navbar-brand mx-4 mb-3" target="_blank">
+                <h3 class="text-primary">Cognilabs</h3>
+            </a>
+            <div class="d-flex align-items-center ms-4 mb-4">
+                <div class="position-relative">
+                    <img class="rounded-circle"
+                        src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg"
+                        alt="" style="width: 40px; height: 40px;">
+                    <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                 </div>
-                <div class="navbar-nav w-100">
-                    <a href="{% url 'consulting' %}" class="nav-item nav-link active">Dashboard</a>
-
-
-
-                    <a href="{% url  'consusers' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Users</a>
-                    <a href="{% url  'conscharai' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>CharAi</a>
-                    <a href="{% url  'conschatfile' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Chat File</a>
-                    <a href="{% url  'conschatrequests' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Chat Request</a>
-                       <a href="{% url  'conshistory' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Request History</a>
-                      <a href="{% url  'constelegram' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>TelegramMessage</a>
-                    <a href="{% url  'consteammemberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Team Members</a>
-                    <a href="{% url  'consservices' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Services</a>
-                    <a href="{% url  'consconversation' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Conversations</a>
-                    <a href="{% url  'conscontactmessages' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Messages</a>
-                    <a href="{% url  'conscomments' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Comments</a>
-                    <a href="{% url  'consblogposts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Blogs</a>
-{#                    <a href="{% url  'consservicememberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Service Memberships</a>#}
-
+                <div class="ms-3">
+                    <h6 class="mb-0">{{ user.name }}</h6>
+                    <span>{{ user.email }}</span>
                 </div>
-            </nav>
-        </div>
-        <!-- Sidebar End -->
+            </div>
+            <div class="navbar-nav w-100">
+                <a href="{% url 'consulting' %}" class="nav-item nav-link active">Dashboard</a>
+                <a href="{% url  'consusers' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Users</a>
+                <a href="{% url  'conschatrequests' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Chat
+                    Request</a>
+                <a href="{% url  'conshistory' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Request
+                    History</a>
+                <a href="{% url  'consteammemberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Team
+                    Members</a>
+                <a href="{% url  'consservices' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Services</a>
+                <a href="{% url  'conscomments' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Comments</a>
+                <a href="{% url  'consblogposts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Blogs</a>
+            </div>
+        </nav>
+    </div>
+    <!-- Sidebar End -->
 
+    <!-- Content Start -->
+    <div class="content">
+        <div class="container-fluid pt-4 px-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card" style="background-color: black; color: red;">
+                        <div class="card-body">
+                            <h5 class="card-title">Team Membership List</h5>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
 
-        <!-- Content Start -->
-        <div class="content">
-            <!-- Navbar Start -->
-            <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
-                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
-                    <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
-                </a>
-                {#                <a href="#" class="sidebar-toggler flex-shrink-0">#}
-                {#                    <i class="fa fa-bars"></i>#}
-                {#                </a>#}
+                                        <th>Role</th>
+                                        <th>Description</th>
+                                        <th>Instagram</th>
+                                        <th>Twitter</th>
+                                        <th>Facebook</th>
+                                        <th>YouTube</th>
+                                        <th>LinkedIn</th>
+                                        <th>Action</th>
+                                        <th>Action</th>
 
-                <div class="navbar-nav align-items-center ms-auto">
-                   
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg" alt="" style="width: 40px; height: 40px;">
-                            {#                            <span class="d-none d-lg-inline-flex">{{user[7]}}</span>#}
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                            <!-- Settings and profile
-                            <a href="#" class="dropdown-item">My Profile</a>
-                            <a href="#" class="dropdown-item">Settings</a>
-                            -->
-                            <a href="/logout" class="dropdown-item">Log Out</a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-            <!-- Navbar End -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for member in memberships %}
+                                    <tr id="member-row-{{ member.0 }}">
+                                        <td>{{ member.0 }}</td>
+                                        <td>{{ member.1 }}</td>
+                                        <td>{{ member.2 }}</td>
+                                        <td>{{ member.3 }}</td>
+                                        <td>{{ member.4 }}</td>
+                                        <td>{{ member.5 }}</td>
+                                        <td>{{ member.6 }}</td>
+                                        <td>{{ member.7 }}</td>
 
+                                        <td>   <button class="btn btn-warning btn-sm edit-entity" data-id="{{ member.0 }}"
+                                                data-userid="{{ member.1 }}" data-role="{{ member.1}}"
+                                                data-description="{{ member.2 }}" data-instagram="{{ member.3 }}"
+                                                data-twitter="{{ member.4 }}" data-facebook="{{ member.5 }}"
+                                                data-youtube="{{ member.6 }}" data-linkedin="{{ member.7 }}">Edit</button></td>
+                                        <td>
 
-            <!-- Sale & Revenue Start -->
-
-            <div class="content-fluid">
-                <div class="container-fluid pt-4 px-4">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card" style="background-color: black; color: red;">
-                                <div class="card-body">
-
-                                    <h5 class="card-title">Membership List</h5>
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Userid</th>
-                                            <th>Role</th>
-                                            <th>Description</th>
-                                            <th>Instagram</th>
-                                            <th>Twitter</th>
-                                            <th>Facebook</th>
-                                            <th>YouTube</th>
-                                            <th>LinkedIn</th>
-                                            <th>Action</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {% for member in memberships %}
-                                            <tr id="member-row-{{ member.0 }}">
-                                                <td>{{ member.0 }}</td>
-                                                <td>{{ member.1 }}</td>
-                                                <td>{{ member.2 }}</td>
-                                                <td>{{ member.3 }}</td>
-                                                <td>{{ member.4 }}</td>
-                                                <td>{{ member.5 }}</td>
-                                                <td>{{ member.6 }}</td>
-                                                <td>{{ member.7 }}</td>
-                                                <td>{{ member.8}}</td>
-                                                <td>
-                                                    <button class="btn btn-danger btn-sm delete-entity" data-type="member" data-id="{{ member.0 }}">Delete</button>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
-
-
-
-                                </div>
-                            </div>
+                                            <button class="btn btn-danger btn-sm delete-entity" data-type="member"
+                                                data-id="{{ member.0 }}">Delete</button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
-
-
-
-
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    document.querySelectorAll('.delete-entity').forEach(function (button) {
-                        button.addEventListener('click', function () {
-                            let entityId = this.getAttribute('data-id');
-                            let entityType = this.getAttribute('data-type');
-                            let row = this.closest('tr'); // O'chirilgan qatorni olish
-
-                            if (confirm('Are you sure you want to delete this item?')) {
-                                fetch(`/consulting/?type=${entityType}&id=${entityId}`, {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'X-CSRFToken': '{{ csrf_token }}',
-                                        'Content-Type': 'application/json'
-                                    }
-                                }).then(response => response.json())
-                                    .then(data => {
-                                        if (data.success) {
-                                            row.remove(); // Qatorni DOMdan olib tashlash
-                                            alert('Item successfully deleted!');
-                                        } else {
-                                            alert('Failed to delete item.');
-                                        }
-                                    }).catch(error => {
-                                    alert('An error occurred. Please try again.');
-                                });
-                            }
-                        });
-                    });
-                });
-            </script>
-
-
-
         </div>
 
-
-
+        <!-- Edit Modal Start -->
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="background-color: black; color: grey;">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Edit Team Member</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                            style="background-color: red;"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editForm">
+                            <input type="hidden" id="memberId">
+                            <div class="mb-3">
+                                <label for="memberRole" class="form-label" style="color:white">Role</label>
+                                <input type="text" class="form-control" id="memberRole" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="memberDescription" class="form-label" style="color:white">Description</label>
+                                <textarea class="form-control" id="memberDescription" rows="2" required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="memberInstagram" class="form-label" style="color:white">Instagram</label>
+                                <input type="text" class="form-control" id="memberInstagram">
+                            </div>
+                            <div class="mb-3">
+                                <label for="memberTwitter" class="form-label" style="color:white">Twitter</label>
+                                <input type="text" class="form-control" id="memberTwitter">
+                            </div>
+                            <div class="mb-3">
+                                <label for="memberFacebook" class="form-label" style="color:white">Facebook</label>
+                                <input type="text" class="form-control" id="memberFacebook">
+                            </div>
+                            <div class="mb-3">
+                                <label for="memberYouTube" class="form-label" style="color:white">YouTube</label>
+                                <input type="text" class="form-control" id="memberYouTube">
+                            </div>
+                            <div class="mb-3">
+                                <label for="memberLinkedIn" class="form-label" style="color:white">LinkedIn</label>
+                                <input type="text" class="form-control" id="memberLinkedIn">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            style="background-color: red; color: white;">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="saveEdit"
+                            style="background-color: red; color: white;">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Edit Modal End -->
     </div>
+</div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Delete functionality
+        document.querySelectorAll('.delete-entity').forEach(function (button) {
+            button.addEventListener('click', function () {
+                let entityId = this.getAttribute('data-id');
+                let entityType = this.getAttribute('data-type');
+                let row = this.closest('tr');
+
+                if (confirm('Are you sure you want to delete this item?')) {
+                    fetch(`/consteammemberships/?type=${entityType}&id=${entityId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                row.remove();
+                                alert('Item successfully deleted!');
+                            } else {
+                                alert('Failed to delete item.');
+                            }
+                        }).catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred. Please try again.');
+                        });
+                }
+            });
+        });
+
+        // Edit functionality
+        document.querySelectorAll('.edit-entity').forEach(function (button) {
+            button.addEventListener('click', function () {
+                document.getElementById('memberId').value = this.getAttribute('data-id');
+                document.getElementById('memberRole').value = this.getAttribute('data-role');
+                document.getElementById('memberDescription').value = this.getAttribute('data-description');
+                document.getElementById('memberInstagram').value = this.getAttribute('data-instagram');
+                document.getElementById('memberTwitter').value = this.getAttribute('data-twitter');
+                document.getElementById('memberFacebook').value = this.getAttribute('data-facebook');
+                document.getElementById('memberYouTube').value = this.getAttribute('data-youtube');
+                document.getElementById('memberLinkedIn').value = this.getAttribute('data-linkedin');
+
+                let editModal = new bootstrap.Modal(document.getElementById('editModal'));
+                editModal.show();
+            });
+        });
+
+        // Save changes
+        document.getElementById('saveEdit').addEventListener('click', function () {
+            let entityId = document.getElementById('memberId').value;
+            let data = {
+                role: document.getElementById('memberRole').value,
+                description: document.getElementById('memberDescription').value,
+                instagram: document.getElementById('memberInstagram').value,
+                twitter: document.getElementById('memberTwitter').value,
+                facebook: document.getElementById('memberFacebook').value,
+                youtube: document.getElementById('memberYouTube').value,
+                linkedin: document.getElementById('memberLinkedIn').value
+            };
+
+            fetch(`/consteammemberships/?id=${entityId}`, {
+                method: 'PUT',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Member updated successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to update member.');
+                    }
+                }).catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
+        });
+    });
+</script>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

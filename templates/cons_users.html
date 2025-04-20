@@ -23,24 +23,16 @@
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                    <a href="{% url 'consulting' %}" class="nav-item nav-link active">Dashboard</a>
-
-
-
-                    <a href="{% url  'consusers' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Users</a>
-                    <a href="{% url  'conscharai' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>CharAi</a>
-                    <a href="{% url  'conschatfile' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Chat File</a>
-                    <a href="{% url  'conschatrequests' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Chat Request</a>
-                       <a href="{% url  'conshistory' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Request History</a>
-                      <a href="{% url  'constelegram' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>TelegramMessage</a>
-                    <a href="{% url  'consteammemberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Team Members</a>
-                    <a href="{% url  'consservices' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Services</a>
-                    <a href="{% url  'consconversation' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Conversations</a>
-                    <a href="{% url  'conscontactmessages' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Messages</a>
-                    <a href="{% url  'conscomments' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Comments</a>
-                    <a href="{% url  'consblogposts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Blogs</a>
-{#                    <a href="{% url  'consservicememberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Service Memberships</a>#}
-
+                <a href="{% url 'consulting' %}" class="nav-item nav-link active">Dashboard</a>
+                <a href="{% url  'consusers' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Users</a>
+                <a href="{% url  'conschatrequests' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Chat Request</a>
+                   <a href="{% url  'conshistory' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Request History</a>
+                <a href="{% url  'consteammemberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Team Members</a>
+                <a href="{% url  'consservices' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Services</a>
+                <a href="{% url  'conscomments' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Comments</a>
+                <a href="{% url  'consblogposts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Blogs</a>
+<a href="{% url  'addteammembership' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>+ Teammebers</a>
+<a href="{% url  'consaddservice' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i> + Service</a>
                 </div>
             </nav>
         </div>
@@ -51,7 +43,7 @@
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
-                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
+                <a href="{% url 'consulting' %}" class="navbar-brand d-flex d-lg-none me-4">
                     <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
                 </a>
                 {#                <a href="#" class="sidebar-toggler flex-shrink-0">#}
@@ -59,7 +51,7 @@
                 {#                </a>#}
 
                 <div class="navbar-nav align-items-center ms-auto">
-                    
+
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <img class="rounded-circle me-lg-2" src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg" alt="" style="width: 40px; height: 40px;">
@@ -79,7 +71,6 @@
 
 
             <!-- Sale & Revenue Start -->
-
             <div class="content-fluid">
                 <div class="container-fluid pt-4 px-4">
                     <div class="row">
@@ -90,45 +81,47 @@
                                     <table class="table">
                                         <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
-                                            <th>Email</th>
-                                            <th>Phone Number</th>
-                                            <th>Picture</th>
-                                            <th>Join date</th>
-                                            <th>Is Superuser</th>
-                                            <th>Is Staff</th>
-                                            <th>Action</th>
+                                            <th scope="col">ID</th>
+                                        <th scope="col">Created At</th>
+                                        <th scope="col">First Name</th>
+                                        <th scope="col">Last Name</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Phone</th>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Is Staff</th>
+
                                         </tr>
                                         </thead>
                                         <tbody>
                                         {% for user in users %}
                                             <tr id="user-row-{{ user.0 }}">
                                                 <td>{{ user.0 }}</td>
-                                                <td>{{ user.1 }}</td>
+
                                                 <td>{{ user.2 }}</td>
                                                 <td>{{ user.3 }}</td>
                                                 <td>{{ user.4 }}</td>
                                                 <td>{{ user.5 }}</td>
                                                 <td>{{ user.6 }}</td>
                                                 <td>{{ user.7 }}</td>
-                                                <td>{{ user.8 }}</td>
                                                 <td>
-                                                    <button class="btn btn-danger btn-sm delete-entity" data-type="user" data-id="{{ user.0 }}">Delete</button>
+                                                    {% if user.10 %}
+                                                        <button class="btn btn-success btn-sm toggle-staff" data-id="{{ user.0 }}" data-status="true">True</button>
+                                                    {% else %}
+                                                        <button class="btn btn-danger btn-sm toggle-staff" data-id="{{ user.0 }}" data-status="false">False</button>
+                                                    {% endif %}
                                                 </td>
+
                                             </tr>
                                         {% endfor %}
                                         </tbody>
                                     </table>
-
-
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
 
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
@@ -139,7 +132,7 @@
                             let row = this.closest('tr'); // O'chirilgan qatorni olish
 
                             if (confirm('Are you sure you want to delete this item?')) {
-                                fetch(`/consulting/?type=${entityType}&id=${entityId}`, {
+                                fetch(`/consusers/?type=${entityType}&id=${entityId}`, {
                                     method: 'DELETE',
                                     headers: {
                                         'X-CSRFToken': '{{ csrf_token }}',
@@ -161,6 +154,42 @@
                     });
                 });
             </script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.toggle-staff').forEach(function (button) {
+        button.addEventListener('click', function () {
+            let userId = this.getAttribute('data-id');
+            let currentStatus = this.getAttribute('data-status');
+            let newStatus = (currentStatus === 'true') ? 'false' : 'true';
+
+            fetch(`/consusers/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    new_status: newStatus
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.textContent = (newStatus === 'true') ? 'True' : 'False';
+                    this.classList.toggle('btn-success', newStatus === 'true');
+                    this.classList.toggle('btn-danger', newStatus === 'false');
+                    this.setAttribute('data-status', newStatus);
+                } else {
+                    alert('Error updating user status');
+                }
+            });
+        });
+    });
+});
+</script>
 
         </div>
 

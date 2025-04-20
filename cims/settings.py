@@ -96,7 +96,7 @@ DATABASES = {
     },
     'telegram': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tuya$test-bot-prod',
+        'NAME': 'tuya$test-bot-new',
         'USER': 'tuya',
         'PASSWORD': 'tuyadatabases',
         'HOST': 'tuya.mysql.pythonanywhere-services.com',
@@ -109,6 +109,15 @@ DATABASES = {
         'PASSWORD': 'tuyadatabases',
         'HOST': 'tuya.mysql.pythonanywhere-services.com',
         'PORT': '3306',
+    },
+      'service': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'tuya$Klean',
+        'USER': 'tuya',
+        'PASSWORD': 'tuyadatabases',
+        'HOST': 'tuya.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
+
     },
 
 

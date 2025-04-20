@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Umumiy form elementlari */
+    .form-control {
+        background-color: #191C24;
+        color: white;
+        border: 1px solid #555;
+    }
+
+    /* Focus holati */
+    .form-control:focus {
+        background-color: #191C24;
+        color: white;
+        border-color: #e75228;
+        box-shadow: none;
+    }
+
+    /* Select element uchun rang */
+    select.form-control {
+        background-color: #191C24;
+        color:  #191C24;
+    }
+
+    /* Option elementlarining rangini belgilash */
+    select.form-control option {
+        background-color: #191C24;
+        color:  #191C24;
+    }
+
+    /* Tanlangan optionning rangini saqlash */
+    select.form-control option:checked {
+        background-color: #2a2f3b;
+        color: #191C24;
+    }
+
+    /* Select qilingandan keyin ham rangni saqlash */
+    select.form-control:focus option:checked {
+        background-color: #2a2f3b;
+        color:  #191C24;
+    }
+
+    /* Label uchun rang */
+    label.form-label {
+        color: white;
+    }
+
+    /* Submit tugmasi */
+    button.btn {
+        background-color: #c91212;
+        border-color: #da1818;
+    }
+
+    button.btn:hover {
+        background-color: #d83e2d;
+        border-color: #ad1919;
+    }
+</style>
+
+
+<div class="container-fluid position-relative d-flex p-0">
+    <!-- Sidebar Start -->
+    <div class="sidebar pe-4 pb-3">
+        <nav class="navbar bg-secondary navbar-dark">
+            <a href="http://cognilabs.org/" class="navbar-brand mx-4 mb-3" target="_blank">
+                <h3 class="text-primary">Cognilabs</h3>
+            </a>
+            <div class="d-flex align-items-center ms-4 mb-4">
+                <div class="position-relative">
+                    <img class="rounded-circle" src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg" alt="" style="width: 40px; height: 40px;">
+                    <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+                </div>
+                <div class="ms-3">
+                    <h6 class="mb-0">{{ user.name }}</h6>
+                    <span>{{ user.email }}</span>
+                </div>
+            </div>
+            <div class="navbar-nav w-100">
+                <a href="{% url 'consulting' %}" class="nav-item nav-link active">Dashboard</a>
+                <a href="{% url  'consusers' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Users</a>
+                <a href="{% url  'conschatrequests' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Chat Request</a>
+                   <a href="{% url  'conshistory' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Request History</a>
+                <a href="{% url  'consteammemberships' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Team Members</a>
+                <a href="{% url  'consservices' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Services</a>
+                <a href="{% url  'conscomments' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Comments</a>
+                <a href="{% url  'consblogposts' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Blogs</a>
+<a href="{% url  'addteammembership' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>+ Teammebers</a>
+<a href="{% url  'consaddservice' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i> + Service</a>
+            </div>
+        </nav>
+    </div>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+            <!-- Navbar content here -->
+        </nav>
+        <!-- Navbar End -->
+        <!-- Add Team Membership Form -->
+        <div class="container mt-4">
+            <h1 class="mb-4">Add Team Membershi</h1>
+            <h1 class="mb-4">Add Team Membership</h1>
+            <form method="POST" action="{% url 'addteammembership' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="user_id" class="form-label">User:</label>
+                    <select class="form-control" name="user_id" id="user_id" required>
+                        {% for user in users %}
+                            <option value="{{ user.0 }}">{{ user.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+
+                <div class="mb-3">
+                    <label for="role" class="form-label">Role:</label>
+                    <input type="text" class="form-control" name="role" id="role" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description:</label>
+                    <textarea class="form-control" name="description" id="description" rows="3" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="instagram" class="form-label">Instagram:</label>
+                    <input type="url" class="form-control" name="instagram" id="instagram">
+                </div>
+
+                <div class="mb-3">
+                    <label for="twitter" class="form-label">Twitter:</label>
+                    <input type="url" class="form-control" name="twitter" id="twitter">
+                </div>
+
+                <div class="mb-3">
+                    <label for="facebook" class="form-label">Facebook:</label>
+                    <input type="url" class="form-control" name="facebook" id="facebook">
+                </div>
+
+                <div class="mb-3">
+                    <label for="youtube" class="form-label">Youtube:</label>
+                    <input type="url" class="form-control" name="youtube" id="youtube">
+                </div>
+
+                <div class="mb-3">
+                    <label for="linkedin" class="form-label">LinkedIn:</label>
+                    <input type="url" class="form-control" name="linkedin" id="linkedin">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Add Team Membership</button>
+            </form>
+        </div>
+        <!-- Form End -->
+    </div>
+    <!-- Content End -->
+</div>
+
+{% endblock %}

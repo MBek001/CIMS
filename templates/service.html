@@ -4,7 +4,7 @@
 
 {% block content %}
 
-    
+
     <!-- Sale & Revenue Start -->
     <div class="container-fluid pt-4 px-4">
         <div class="row g-4">
@@ -62,15 +62,13 @@
                     <tr class="text-white">
 
                         <th scope="col">ID</th>
-                        <th scope="col">Password</th>
-                        <th scope="col">Last Login</th>
                         <th scope="col">Is Superuser</th>
                         <th scope="col">Username</th>
                         <th scope="col">First Name</th>
-                        <th scope="col">Last Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">Is Staff</th>
                         <th scope="col">Is Active</th>
+                        <th scope="col">Last Login</th>
                         <th scope="col">Date Joined</th>
                         <th scope="col">Action</th>
 
@@ -82,16 +80,13 @@
                         <tr>
 
                             <td>{{ user.0 }}</td>
-                            <td>{{ user.1 }}</td>
-                            <td>{{ user.2 }}</td>
                             <td>{{ user.3 }}</td>
                             <td>{{ user.4 }}</td>
                             <td>{{ user.5 }}</td>
-                            <td>{{ user.6 }}</td>
                             <td>{{ user.7 }}</td>
                             <td>{{ user.8 }}</td>
                             <td>{{ user.9 }}</td>
-
+                            <td>{{ user.2 }}</td>
                             <td>{{ user.10 }}</td>
 
 
@@ -141,7 +136,7 @@
                             <td>{{ message.3 }}</td>
                             <td>{{ message.4 }}</td>
                             <td>{{ message.5 }}</td>
-                    
+
 
 
 
@@ -162,35 +157,35 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-           
-            document.querySelectorAll('.delete-item').forEach(function (button) {
-           
-                button.addEventListener('click', function () {
-                    const itemId = this.getAttribute('data-id'); 
-                    const itemType = this.getAttribute('data-type'); 
-                    const row = this.closest('tr'); 
 
-                   
+            document.querySelectorAll('.delete-item').forEach(function (button) {
+
+                button.addEventListener('click', function () {
+                    const itemId = this.getAttribute('data-id');
+                    const itemType = this.getAttribute('data-type');
+                    const row = this.closest('tr');
+
+
                     if (confirm('Bu elementni o‘chirishga ishonchingiz komilmi?')) {
-                   
-                        fetch(`/serviceall/`, { 
-                            method: 'DELETE', 
+
+                        fetch(`/serviceall/`, {
+                            method: 'DELETE',
                             headers: {
                                 'X-CSRFToken': '{{ csrf_token }}',
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ type: itemType, id: itemId }) 
-                        }).then(response => response.json()) 
+                            body: JSON.stringify({ type: itemType, id: itemId })
+                        }).then(response => response.json())
                             .then(data => {
                                 if (data.status === 'success') {
-                                    row.remove(); 
-                                    alert(data.message); 
+                                    row.remove();
+                                    alert(data.message);
                                 } else {
-                                    alert(data.message); 
+                                    alert(data.message);
                                 }
                             }).catch(error => {
                             console.error('Xatolik:', error);
-                            alert('Xatolik yuz berdi. Iltimos, qaytadan urinib ko‘ring.'); 
+                            alert('Xatolik yuz berdi. Iltimos, qaytadan urinib ko‘ring.');
                         });
                     }
                 });

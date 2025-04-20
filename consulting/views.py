@@ -10,6 +10,8 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from functools import wraps
+import json
+from django.views.decorators.csrf import csrf_exempt
 from datetime import  datetime
 
 def company_code_check(company_code_value):
@@ -31,50 +33,46 @@ def consulting(request):
     if request.method == "GET":
 
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM public.user ORDER BY join_date DESC LIMIT 4")
+            cursor.execute("SELECT * FROM accounts_user ORDER BY join_date DESC LIMIT 4")
             user_list = cursor.fetchall()
 
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT COUNT(*) FROM public.user")
+            cursor.execute("SELECT COUNT(*) FROM accounts_user")
             total_users = cursor.fetchone()[0]
 
-        # with connections['consulting'].cursor() as cursor:
-        #     cursor.execute("SELECT * FROM public.about ORDER BY id DESC LIMIT 4")
-        #     about_list = cursor.fetchall()
-
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM teammembership ORDER BY id DESC LIMIT 4")
+            cursor.execute("SELECT * FROM accounts_teammembership ORDER BY id DESC LIMIT 4")
             membership_list = cursor.fetchall()
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM service_members ORDER BY id DESC LIMIT 4")
+            cursor.execute("SELECT * FROM accounts_service_members ORDER BY id DESC LIMIT 4")
             service_teammembership_list = cursor.fetchall()
 
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM service ORDER BY id DESC LIMIT 4")
+            cursor.execute("SELECT * FROM accounts_service ORDER BY id DESC LIMIT 4")
             services= cursor.fetchall()
 
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM conversation ORDER BY id DESC LIMIT 4")
+            cursor.execute("SELECT * FROM accounts_conversation ORDER BY id DESC LIMIT 4")
             conversations = cursor.fetchall()
 
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM contactmessage ORDER BY id DESC LIMIT 4")
+            cursor.execute("SELECT * FROM accounts_contactmessage ORDER BY id DESC LIMIT 4")
             messages = cursor.fetchall()
 
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM comment ORDER BY id DESC LIMIT 4")
+            cursor.execute("SELECT * FROM accounts_comment ORDER BY id DESC LIMIT 4")
             comments = cursor.fetchall()
 
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM blogpost ORDER BY id DESC LIMIT 4")
+            cursor.execute("SELECT * FROM accounts_blogpost ORDER BY id DESC LIMIT 4")
             blogposts = cursor.fetchall()
 
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT COUNT(*) FROM blogpost")
+            cursor.execute("SELECT COUNT(*) FROM accounts_blogpost")
             total_blogpost = cursor.fetchone()[0]
 
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT COUNT(*) FROM requesthistory")
+            cursor.execute("SELECT COUNT(*) FROM accounts_requesthistory")
             total_request=cursor.fetchone()[0]
 
         user=request.user
@@ -90,7 +88,7 @@ def consulting(request):
          'servicememberships': service_teammembership_list,'services': services,'conversations': conversations,
          'messages': messages, 'comments': comments,'blogposts': blogposts,'totalusers':total_users,'totalblogposts':total_blogpost,
          'received_messages':received_messages,'total_request':total_request})
-    
+
     elif request.method == "DELETE":
 
         entity_type = request.GET.get('type')
@@ -99,21 +97,21 @@ def consulting(request):
         try:
             with connections['consulting'].cursor() as cursor:
                 if entity_type == 'user':
-                    cursor.execute("DELETE FROM public.user WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_user WHERE id = %s", [entity_id])
                 elif entity_type == 'member':
-                    cursor.execute("DELETE FROM teammembership WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_teammembership WHERE id = %s", [entity_id])
                 elif entity_type == 'servicemember':
-                    cursor.execute("DELETE FROM service_members WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_service_members WHERE id = %s", [entity_id])
                 elif entity_type == 'service':
-                    cursor.execute("DELETE FROM service WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_service WHERE id = %s", [entity_id])
                 elif entity_type == 'conversation':
-                    cursor.execute("DELETE FROM conversation WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_conversation WHERE id = %s", [entity_id])
                 elif entity_type == 'message':
-                    cursor.execute("DELETE FROM contactmessage WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_contactmessage WHERE id = %s", [entity_id])
                 elif entity_type == 'comment':
-                    cursor.execute("DELETE FROM comment WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_comment WHERE id = %s", [entity_id])
                 elif entity_type == 'blogpost':
-                    cursor.execute("DELETE FROM blogpost WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_blogpost WHERE id = %s", [entity_id])
                 else:
                     return JsonResponse({'success': False, 'error': 'Invalid entity type'})
 
@@ -122,16 +120,48 @@ def consulting(request):
             return JsonResponse({'success': False, 'error': str(e)})
 
 
+@login_required
+@company_code_check("consulting")
+def consuseradd(request):
+    if request.method == "POST":
+        try:
+            # Foydalanuvchidan kelayotgan POST so'rovidagi ma'lumotlarni olish
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            email = request.POST.get('email')
+            phone_number = request.POST.get('phone_number')
+            profile_picture = request.POST.get('profile_picture', None)
+            is_superuser = request.POST.get('is_superuser') == 'on'  # Checkbox dan keladigan qiymatni olish
+            is_staff = request.POST.get('is_staff') == 'on'  # Checkbox dan keladigan qiymat
+
+            # Foydalanuvchini ma'lumotlar bazasiga qo'shish
+            with connections['consulting'].cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO accounts_user
+                    (first_name, last_name, email, phone_number, profile_picture, is_superuser, is_staff, join_date)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, NOW())
+                """, [first_name, last_name, email, phone_number, profile_picture, is_superuser, is_staff])
+
+            return render(request,'consulting.html')
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return render(request, 'cons_add_staff.html')
+
+
 
 @login_required
 @company_code_check("consulting")
+@require_http_methods(["GET", "POST"])
+
+
 def consusers(request):
     if request.method == "GET":
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM public.user ORDER BY id DESC")
+            cursor.execute("SELECT * FROM accounts_user ORDER BY id DESC")
             user_list = cursor.fetchall()
 
-        return render(request,'cons_users.html',{'users': user_list})
+        return render(request, 'cons_users.html', {'users': user_list})
 
     elif request.method == "DELETE":
         entity_type = request.GET.get('type')
@@ -140,72 +170,30 @@ def consusers(request):
         try:
             with connections['consulting'].cursor() as cursor:
                 if entity_type == 'user':
-                    cursor.execute("DELETE FROM public.user WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_user WHERE id = %s", [entity_id])
 
+            return JsonResponse({'success': True})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
 
-
-@login_required
-@company_code_check("consulting")
-def conscharai(request):
-    if request.method == "GET":
-        with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM charai ORDER BY id DESC")
-            abouts = cursor.fetchall()
-        return render(request, 'cons_charai.html', {'abouts': abouts})
-
-    elif request.method == "DELETE":
-        entity_type = request.GET.get('type')
-        entity_id = request.GET.get('id')
-
+    elif request.method == "POST":
         try:
-            with connections['consulting'].cursor() as cursor:
-                if entity_type == 'ai':
-                    cursor.execute("DELETE FROM charai WHERE id = %s", [entity_id])
-                    return JsonResponse({'success': True})  # Respond with success
-
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})  # Respond with error
-
-        return JsonResponse({'success': False, 'error': 'Entity type not recognized.'})  # Fallback response
-
-
-
-@login_required
-@company_code_check("consulting")
-def conschatfile(request):
-    if request.method == "GET":
-        with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM chatfile ORDER BY id DESC")
-            files = cursor.fetchall()
-
-        return render(request, 'cons_chatfile.html', {'abouts': files})
-
-    elif request.method == "DELETE":
-
-        entity_type = request.GET.get('type')
-
-        entity_id = request.GET.get('id')
-
-        if not entity_type or not entity_id:
-            return JsonResponse({'success': False, 'error': 'Missing parameters.'}, status=400)
-
-        try:
+            data = json.loads(request.body)
+            user_id = data.get('user_id')
+            new_status = data.get('new_status') == 'true'
 
             with connections['consulting'].cursor() as cursor:
+                cursor.execute("UPDATE accounts_user SET is_staff = %s WHERE id = %s", [new_status, user_id])
 
-                if entity_type == 'file':
-                    cursor.execute("DELETE FROM chatfile WHERE id = %s", [entity_id])
-
-                    return JsonResponse({'success': True})
-
-                return JsonResponse({'success': False, 'error': 'Entity type not recognized.'}, status=400)
-
-
+            return JsonResponse({'success': True})
         except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
 
-            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+
 
 
 @login_required
@@ -213,7 +201,7 @@ def conschatfile(request):
 def conschatrequests(request):
     if request.method == "GET":
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM chatrequest ORDER BY id DESC")
+            cursor.execute("SELECT * FROM accounts_chatrequest ORDER BY id DESC")
             requests = cursor.fetchall()
 
         return render(request, 'cons_chatrequests.html', {'abouts': requests})
@@ -231,15 +219,39 @@ def conschatrequests(request):
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
 
+# @login_required
+# @company_code_check("consulting")
+# def consteammembership(request):
+#     if request.method == "GET":
+#         with connections['consulting'].cursor() as cursor:
+#             cursor.execute("SELECT * FROM accounts_teammembership ORDER BY id DESC")
+#             teammemberships = cursor.fetchall()
+
+#         return render(request,'cons_teammemberships.html',{'memberships': teammemberships})
+
+#     elif request.method == "DELETE":
+#         entity_type = request.GET.get('type')
+#         entity_id = request.GET.get('id')
+
+#         try:
+#             with connections['consulting'].cursor() as cursor:
+#                 if entity_type == 'member':
+#                     cursor.execute("DELETE FROM accounts_teammembership WHERE id = %s", [entity_id])
+
+#         except Exception as e:
+#             return JsonResponse({'success': False, 'error': str(e)})
+
+
+
+
 @login_required
 @company_code_check("consulting")
 def consteammembership(request):
     if request.method == "GET":
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM teammembership ORDER BY id DESC")
+            cursor.execute("SELECT * FROM accounts_teammembership ORDER BY id DESC")
             teammemberships = cursor.fetchall()
-
-        return render(request,'cons_teammemberships.html',{'memberships': teammemberships})
+        return render(request, 'cons_teammemberships.html', {'memberships': teammemberships})
 
     elif request.method == "DELETE":
         entity_type = request.GET.get('type')
@@ -248,10 +260,40 @@ def consteammembership(request):
         try:
             with connections['consulting'].cursor() as cursor:
                 if entity_type == 'member':
-                    cursor.execute("DELETE FROM teammembership WHERE id = %s", [entity_id])
-
+                    cursor.execute("DELETE FROM accounts_teammembership WHERE id = %s", [entity_id])
+            return JsonResponse({'success': True})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
+
+    elif request.method == "PUT":
+        entity_id = request.GET.get('id')
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            role = data.get('role')
+            description = data.get('description')
+            instagram = data.get('instagram')
+            twitter = data.get('twitter')
+            facebook = data.get('facebook')
+            youtube = data.get('youtube')
+            linkedin = data.get('linkedin')
+
+            with connections['consulting'].cursor() as cursor:
+                cursor.execute("""
+                    UPDATE accounts_teammembership
+                    SET  role = %s, description = %s, instagram = %s,
+                        twitter = %s, facebook = %s, youtube = %s, linkedin = %s
+                    WHERE id = %s
+                """, [ role, description, instagram, twitter, facebook, youtube, linkedin, entity_id])
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+
+
+
+
+
 
 
 
@@ -260,7 +302,7 @@ def consteammembership(request):
 def servicememberships(request):
     if request.method == "GET":
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM service_teammembership ORDER BY id DESC")
+            cursor.execute("SELECT * FROM accounts_service_teammembership ORDER BY id DESC")
             service_teammembership = cursor.fetchall()
 
         return render(request,'cons_servicememberships.html',{'servicememberships': service_teammembership})
@@ -272,10 +314,35 @@ def servicememberships(request):
         try:
             with connections['consulting'].cursor() as cursor:
                 if entity_type == 'servicemember':
-                    cursor.execute("DELETE FROM service_teammembership WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_service_teammembership WHERE id = %s", [entity_id])
 
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
+
+
+
+# @login_required
+# @company_code_check("consulting")
+# def consservices(request):
+#     if request.method == "GET":
+#         with connections['consulting'].cursor() as cursor:
+#             cursor.execute("SELECT * FROM accounts_service ORDER BY id DESC")
+#             services = cursor.fetchall()
+
+#         return render(request,'cons_services.html',{'services': services})
+
+#     elif request.method == "DELETE":
+#         entity_type = request.GET.get('type')
+#         entity_id = request.GET.get('id')
+
+#         try:
+#             with connections['consulting'].cursor() as cursor:
+#                 if entity_type == 'service':
+#                     cursor.execute("DELETE FROM accounts_service WHERE id = %s", [entity_id])
+
+#         except Exception as e:
+#             return JsonResponse({'success': False, 'error': str(e)})
+
 
 
 
@@ -284,10 +351,9 @@ def servicememberships(request):
 def consservices(request):
     if request.method == "GET":
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM service ORDER BY id DESC")
+            cursor.execute("SELECT * FROM accounts_service ORDER BY id DESC")
             services = cursor.fetchall()
-
-        return render(request,'cons_services.html',{'services': services})
+        return render(request, 'cons_services.html', {'services': services})
 
     elif request.method == "DELETE":
         entity_type = request.GET.get('type')
@@ -296,10 +362,33 @@ def consservices(request):
         try:
             with connections['consulting'].cursor() as cursor:
                 if entity_type == 'service':
-                    cursor.execute("DELETE FROM service WHERE id = %s", [entity_id])
-
+                    cursor.execute("DELETE FROM accounts_service WHERE id = %s", [entity_id])
+            return JsonResponse({'success': True})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
+
+    elif request.method == "PUT":
+        entity_id = request.GET.get('id')
+        try:
+            data = json.loads(request.body.decode('utf-8'))  # JSON formatda kelgan ma'lumotni o'qish
+            name = data.get('name')
+            description = data.get('description')
+
+            with connections['consulting'].cursor() as cursor:
+                cursor.execute(
+                    "UPDATE accounts_service SET name = %s, description = %s WHERE id = %s",
+                    [name, description, entity_id]
+                )
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+
+
+
+
+
 
 
 
@@ -308,7 +397,7 @@ def consservices(request):
 def consconversation(request):
     if request.method == "GET":
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM conversation ORDER BY id DESC")
+            cursor.execute("SELECT * FROM accounts_conversation ORDER BY id DESC")
             conversations = cursor.fetchall()
 
         return render(request,'cons_conversation.html',{'conversations': conversations})
@@ -320,7 +409,7 @@ def consconversation(request):
         try:
             with connections['consulting'].cursor() as cursor:
                 if entity_type == 'conversation':
-                    cursor.execute("DELETE FROM conversation WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_conversation WHERE id = %s", [entity_id])
 
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
@@ -334,7 +423,7 @@ def consconversation(request):
 def conscontactmessage(request):
     if request.method == "GET":
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM contactmessage ORDER BY id DESC")
+            cursor.execute("SELECT * FROM accounts_contactmessage ORDER BY id DESC")
             messages = cursor.fetchall()
 
         return render(request,'cons_contactmessage.html',{'messages': messages})
@@ -346,7 +435,7 @@ def conscontactmessage(request):
         try:
             with connections['consulting'].cursor() as cursor:
                 if entity_type == 'message':
-                    cursor.execute("DELETE FROM contactmessage WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_contactmessage WHERE id = %s", [entity_id])
 
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
@@ -357,7 +446,7 @@ def conscontactmessage(request):
 def conscomments(request):
     if request.method == "GET":
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM comment ORDER BY id DESC")
+            cursor.execute("SELECT * FROM accounts_comment ORDER BY id DESC")
             comments = cursor.fetchall()
 
         return render(request,'cons_comments.html',{'comments': comments})
@@ -369,7 +458,7 @@ def conscomments(request):
         try:
             with connections['consulting'].cursor() as cursor:
                 if entity_type == 'comment':
-                    cursor.execute("DELETE FROM comment WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_comment WHERE id = %s", [entity_id])
 
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
@@ -380,7 +469,7 @@ def conscomments(request):
 def consblogpost(request):
     if request.method == "GET":
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM blogpost ORDER BY id DESC")
+            cursor.execute("SELECT * FROM accounts_blogpost ORDER BY id DESC")
             blogposts = cursor.fetchall()
 
         return render(request,'cons_blogposts.html',{'blogposts': blogposts})
@@ -392,7 +481,7 @@ def consblogpost(request):
         try:
             with connections['consulting'].cursor() as cursor:
                 if entity_type == 'blogpost':
-                    cursor.execute("DELETE FROM blogpost WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_blogpost WHERE id = %s", [entity_id])
 
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
@@ -405,7 +494,7 @@ def consblogpost(request):
 def conshistory(request):
     if request.method == "GET":
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM requesthistory ORDER BY id DESC")
+            cursor.execute("SELECT * FROM accounts_requesthistory ORDER BY id DESC")
             histories = cursor.fetchall()
 
         return render(request,'cons_history.html',{'histories': histories})
@@ -417,7 +506,7 @@ def conshistory(request):
         try:
             with connections['consulting'].cursor() as cursor:
                 if entity_type == 'history':
-                    cursor.execute("DELETE FROM requesthistory WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_requesthistory WHERE id = %s", [entity_id])
 
             return JsonResponse({'success': True})
 
@@ -430,7 +519,7 @@ def conshistory(request):
 def telegrammessage(request):
     if request.method == "GET":
         with connections['consulting'].cursor() as cursor:
-            cursor.execute("SELECT * FROM telegramusermessage ORDER BY id DESC")
+            cursor.execute("SELECT * FROM accounts_accounts_telegramusermessage ORDER BY id DESC")
             telegrams = cursor.fetchall()
 
         return render(request,'cons_telegram.html',{'telegrams': telegrams})
@@ -442,9 +531,80 @@ def telegrammessage(request):
         try:
             with connections['consulting'].cursor() as cursor:
                 if entity_type == 'history':
-                    cursor.execute("DELETE FROM telegramusermessage WHERE id = %s", [entity_id])
+                    cursor.execute("DELETE FROM accounts_telegramusermessage WHERE id = %s", [entity_id])
 
             return JsonResponse({'success': True})
 
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
+
+
+
+@login_required
+@company_code_check("consulting")
+def add_teammembership(request):
+    with connections['consulting'].cursor() as cursor:
+        cursor.execute('SELECT id, email FROM accounts_user')
+        users = cursor.fetchall()
+
+
+    if request.method == "POST":
+        user_id = request.POST.get('user_id')
+        role = request.POST.get('role')
+        description = request.POST.get('description')
+        instagram = request.POST.get('instagram')
+        twitter = request.POST.get('twitter')
+        facebook = request.POST.get('facebook')
+        youtube = request.POST.get('youtube')
+        linkedin = request.POST.get('linkedin')
+
+        try:
+            with connections['consulting'].cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO accounts_teammembership (user_id, role, description, instagram, twitter, facebook, youtube, linkedin)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                """, [user_id, role, description, instagram, twitter, facebook, youtube, linkedin])
+            return redirect('consteammemberships')
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return render(request, 'cons_add_teammembership.html', {'users': users})
+
+
+
+@login_required
+@company_code_check("consulting")
+def add_service(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+
+        try:
+            with connections['consulting'].cursor() as cursor:
+                cursor.execute("""
+                    INSERT INTO accounts_service (name, description, created_at)
+                    VALUES (%s, %s, NOW())
+                """, [name, description])
+            return redirect('consservices')
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return render(request, 'cons_add_service.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,14 +1,13 @@
 from django.urls import path
-from .views import (consulting, consusers, conscharai, consteammembership, consservices, consconversation, \
-                    conscontactmessage,telegrammessage,
-                    consblogpost, conschatfile, conschatrequests,conshistory
+from .views import (consulting, consusers, consteammembership, consservices, consconversation, \
+                    conscontactmessage,telegrammessage,consuseradd,
+                    consblogpost, conschatrequests,conshistory,add_service,add_teammembership
     # consservicemembership
                     )
 
 urlpatterns = [
     path('consulting/', consulting, name='consulting'),
     path('consusers/',consusers,name='consusers'),
-    path('conscharai/',conscharai,name='conscharai'),
     path('conschatrequests/',conschatrequests,name='conschatrequests'),
     path('consteammemberships/',consteammembership,name='consteammemberships'),
     path('consservices/',consservices,name='consservices'),
@@ -16,9 +15,13 @@ urlpatterns = [
     path('conscontactmessages/',conscontactmessage,name='conscontactmessages'),
     path('conscomments/',conscontactmessage,name='conscomments'),
     path('consblogposts/',consblogpost,name='consblogposts'),
-    path('conschatfile/',conschatfile,name='conschatfile'),
     path('conshistory/',conshistory,name='conshistory'),
     path('constelegram/',telegrammessage,name='constelegram'),
+    path('consaddstaff/',consuseradd,name='addstaff'),
+      path('consaddservice/',add_service,name='consaddservice'),
+       path('addteammembership/', add_teammembership, name='addteammembership'),
+
+
 
     # path('consservicememberships/',consservicemembership,name='consservicememberships'),
 ]
