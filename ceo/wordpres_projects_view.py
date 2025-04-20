@@ -1,7 +1,13 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from ceo.models import SiteControl
 from django.http import JsonResponse
 
+from ceo.views import company_code_check
+
+
+@login_required(login_url='')
+@company_code_check("ceo")
 def project_toggle_view(request):
     site_control = SiteControl.objects.first()
     if not site_control:

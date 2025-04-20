@@ -1,11 +1,15 @@
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render, redirect
 
 from . import models
 from .models import Customer
 from .forms import CustomerForm
+from .views import company_code_check
 
 
+@login_required(login_url='')
+@company_code_check("ceo")
 def crm_view(request):
     form = CustomerForm()
 
