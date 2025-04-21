@@ -16,7 +16,8 @@ urlpatterns = [
     path('payments/', views.payments_view, name='payment_list'),
     path('project-toggle/', wordpres_projects_view.project_toggle_view, name='project_toggle'),
     path('api/site-status/', wordpres_projects_view.site_status),
-path('crm/', sales_crm_view.crm_view, name='crm')
+    path('crm/', sales_crm_view.crm_view, name='crm'),
+    path('crm/delete/<int:pk>/', sales_crm_view.delete_customer, name='delete_customer'),
 
 
 ]
