@@ -38,6 +38,7 @@ def crm_view(request):
         customers = Customer.objects.filter(
             Q(full_name__icontains=query) |
             Q(platform__icontains=query) |
+            Q(phone_number=query) |
             Q(username__icontains=query) |
             Q(assistant_name__icontains=query) |
             Q(status__icontains=query)
@@ -45,7 +46,7 @@ def crm_view(request):
     elif show_all:
         customers = Customer.objects.all().order_by('-created_at')
     else:
-        customers = Customer.objects.all().order_by('-created_at')[:4]
+        customers = Customer.objects.all().order_by('-created_at')
 
     return render(request, 'crm_page.html', {
         'form': CustomerForm(),

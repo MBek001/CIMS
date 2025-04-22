@@ -17,8 +17,8 @@ class SiteControl(models.Model):
 class Customer(models.Model):
     STATUS_CHOICES = [
         ('contacted', 'Contacted'),
-        ('project_started', 'Project Started'),
-        ('continuing', 'Contact is Continuing'),
+        ('project_started', 'Project_Started'),
+        ('continuing', 'Continuing'),
         ('finished', 'Finished'),
         ('rejected', 'Rejected'),
     ]

@@ -34,18 +34,18 @@
 
         .form-control::placeholder,
         textarea::placeholder {
-            color: #aaa;
+            color: #da1111;
         }
 
         .form-control:focus,
         .form-select:focus,
         textarea:focus {
             border-color: #dc3545; /* Bootstrap red */
-            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+            box-shadow: 0 0 0 0.2rem rgb(218, 17, 17);
         }
 
         .form-floating > label {
-            color: #bbb;
+            color: #da1111;
         }
 
         .form-floating > .form-control:focus ~ label,
@@ -54,6 +54,42 @@
             color: #fff;
         }
     </style>
+    <style>
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-weight: 300;
+            text-transform: capitalize;
+            font-size: 0.675rem;
+            display: inline-block;
+        }
+
+        .status-contacted {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-project_started {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-continuing {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-finished {
+            background-color: #e2e3e5;
+            color: #6c757d;
+        }
+
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+
 
 </head>
 
@@ -167,12 +203,12 @@
 
 
                 <!-- Customer Table -->
-                <h4 id="customer-section" class="mb-3">Recent Customers</h4>
-                <div class="table-responsive">
+                <h4 id="customer-section" class="mb-3 " >Recent Customers</h4>
+                <div class="table-responsive ">
 
-                    <table class="table table-striped table-bordered">
+                    <table class="table table-striped  table-bordered">
                         <thead>
-                        <tr>
+                        <tr> 
                             <th>Full Name</th>
                             <th>Platform</th>
                             <th>Username</th>
@@ -234,10 +270,14 @@
                                         <td>{{ customer.platform }}</td>
                                         <td>{{ customer.username }}</td>
                                         <td>{{ customer.phone_number }}</td>
-                                        <td>{{ customer.get_status_display }}</td>
+                                        <td>
+                                            <span class="status-badge status-{{ customer.status }}">
+                                                {{ customer.get_status_display }}
+                                            </span>
+                                        </td>
                                         <td>{{ customer.assistant_name }}</td>
                                         <td>
-                                            <div style="max-height: 75px; overflow-y: scroll; white-space: pre-line;">
+                                            <div style="max-height: 75px; max-width: 500px ;overflow-y: scroll; white-space: pre-line;">
                                                 {{ customer.notes }}
                                             </div>
                                         </td>
@@ -265,18 +305,15 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="text-center mt-4">
-                    <form method="POST" action="{% url 'crm' %}#customer-section" class="d-inline">
-                        {% csrf_token %}
-                        <input type="hidden" name="see_all" value="true">
-                        <button type="submit" class="btn btn-outline-light px-5 py-2 fw-bold">
-                            &laquo;&laquo;&laquo;&laquo;&laquo;&laquo; SEE ALL &raquo;&raquo;&raquo;&raquo;&raquo;&raquo;
-                        </button>
-                    </form>
-
-
-                </div>
-
+{#                <div class="text-center mt-4">#}
+{#                    <form method="POST" action="{% url 'crm' %}#customer-section" class="d-inline">#}
+{#                        {% csrf_token %}#}
+{#                        <input type="hidden" name="see_all" value="true">#}
+{#                        <button type="submit" class="btn btn-outline-light px-5 py-2 fw-bold">#}
+{#                            &laquo;&laquo;&laquo;&laquo;&laquo;&laquo; SEE ALL &raquo;&raquo;&raquo;&raquo;&raquo;&raquo;#}
+{#                        </button>#}
+{#                    </form>#}
+{#                </div>#}
             </div>
         </div>
     </div>
@@ -296,5 +333,23 @@
 <script src="{% static 'lib/tempusdominus/js/moment.min.js' %}"></script>
 <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js' %}"></script>
 <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<script>
+    // Save the scroll position before the form is submitted
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+
+    window.onload = function () {
+        const scrollY = sessionStorage.getItem('scrollPosition');
+        if (scrollY !== null) {
+            window.scrollTo(0, parseInt(scrollY));
+        }
+    }
+
+    window.onbeforeunload = function () {
+        sessionStorage.setItem('scrollPosition', window.scrollY);
+    }
+</script>
+
 </body>
 </html>
