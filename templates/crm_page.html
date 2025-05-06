@@ -23,6 +23,13 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     <style>
+        .white-input {
+            background-color: white !important;
+            color: #ffffff;
+        }
+    </style>
+
+    <style>
         .form-control,
         .form-select,
         textarea {
@@ -34,7 +41,7 @@
 
         .form-control::placeholder,
         textarea::placeholder {
-            color: #da1111;
+            color: #ffffff;
         }
 
         .form-control:focus,
@@ -45,7 +52,7 @@
         }
 
         .form-floating > label {
-            color: #da1111;
+            color: #ffffff;
         }
 
         .form-floating > .form-control:focus ~ label,
@@ -114,10 +121,13 @@
                 </div>
             </div>
             <div class="navbar-nav w-100">
-                <a href="{% url 'ceo' %}" class="nav-item nav-link ">Dashboard</a>
-                <a href="{% url 'payment_list' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Payment</a>
-                <a href="{% url 'project_toggle' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Wordpres</a>
-                <a href="{% url 'crm' %}" class="nav-item nav-link active"><i class="fa fa-th me-2"></i>Sales CRM</a>
+                <a href="{% url 'ceo' %}" class="nav-item nav-link"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
+                <a href="{% url  'payment_list' %}" class="nav-item nav-link "><i class="fa fa-credit-card me-2"></i>Payment</a>
+                <a href="{% url 'project_toggle' %}" class="nav-item nav-link"><i class="fab fa-wordpress me-2"></i>WordPress</a>
+                <a href="{% url  'crm' %}" class="nav-item nav-link active"><i class="fa fa-users me-2"></i>Sales
+                    CRM</a>
+                <a href="{% url  'finance_list' %}" class="nav-item nav-link "><i
+                        class="fa fa-money-bill-wave me-2"></i>Finance</a>
             </div>
         </nav>
     </div>
@@ -203,12 +213,11 @@
 
 
                 <!-- Customer Table -->
-                <h4 id="customer-section" class="mb-3 " >Recent Customers</h4>
-                <div class="table-responsive ">
-
-                    <table class="table table-striped  table-bordered">
+                <h4 id="customer-section" class="mb-3 ">Recent Customers</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
                         <thead>
-                        <tr> 
+                        <tr>
                             <th>Full Name</th>
                             <th>Platform</th>
                             <th>Username</th>
@@ -217,79 +226,58 @@
                             <th>Assistant</th>
                             <th>Notes</th>
                             <th>Created</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for customer in customers %}
-                            <tr id="customer-{{ customer.id }}">
-                                {% if edit_id == customer.id %}
+                            {% if edit_id == customer.id %}
+                                <tr id="customer-{{ customer.id }}">
                                     <form method="POST">
                                         {% csrf_token %}
                                         <input type="hidden" name="edit_id" value="{{ customer.id }}">
-                                        <tr>
-                                            <td><input type="text" name="full_name" value="{{ customer.full_name }}"
-                                                       class="form-control"></td>
-                                            <td><input type="text" name="platform" value="{{ customer.platform }}"
-                                                       class="form-control"></td>
-                                            <td><input type="text" name="username" value="{{ customer.username }}"
-                                                       class="form-control"></td>
-                                            <td><input type="text" name="phone_number"
-                                                       value="{{ customer.phone_number }}"
-                                                       class="form-control"></td>
-                                            <td>
-                                                <select name="status" class="form-select">
-                                                    {% for key, val in customer.STATUS_CHOICES %}
-                                                        <option value="{{ key }}"
-                                                                {% if customer.status == key %}selected{% endif %}>{{ val }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </td>
-                                            <td><input type="text" name="assistant_name"
-                                                       value="{{ customer.assistant_name }}" class="form-control"></td>
-                                            <td><textarea name="notes"
-                                                          class="form-control">{{ customer.notes }}</textarea>
-                                            </td>
-                                            <td>{{ customer.created_at|date:"Y-m-d H:i" }}</td>
-                                            <td>
-                                                <button type="submit" name="save_edit" class="btn btn-success btn-sm">
-                                                    <i class="fas fa-save"></i>
-                                                </button>
-                                            </td>
-                                            <td>
-                                                <a href="{% url 'delete_customer' customer.id %}"
-                                                   class="btn btn-danger btn-sm"
-                                                   onclick="return confirm('Are you sure?')">
-                                                    <i class="fas fa-trash"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </form>
-                                {% else %}
-                                    <tr>
-                                        <td>{{ customer.full_name }}</td>
-                                        <td>{{ customer.platform }}</td>
-                                        <td>{{ customer.username }}</td>
-                                        <td>{{ customer.phone_number }}</td>
                                         <td>
-                                            <span class="status-badge status-{{ customer.status }}">
-                                                {{ customer.get_status_display }}
-                                            </span>
+                                            <input type="text" name="full_name" value="{{ customer.full_name }}"
+                                                   class="form-control white-input" placeholder="Full Name"
+                                                   id="floatingFullName">
                                         </td>
-                                        <td>{{ customer.assistant_name }}</td>
                                         <td>
-                                            <div style="max-height: 75px; max-width: 500px ;overflow-y: scroll; white-space: pre-line;">
-                                                {{ customer.notes }}
-                                            </div>
+                                            <input type="text" name="platform" value="{{ customer.platform }}"
+                                                   class="form-control" placeholder="Platform" id="floatingPlatform">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="username" value="{{ customer.username }}"
+                                                   class="form-control" placeholder="Username" id="floatingUsername">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="phone_number" value="{{ customer.phone_number }}"
+                                                   class="form-control" placeholder="Phone Number"
+                                                   id="floatingPhoneNumber">
+                                        </td>
+                                        <td>
+                                            <select name="status" class="form-select" id="floatingStatus">
+                                                {% for key, val in customer.STATUS_CHOICES %}
+                                                    <option value="{{ key }}"
+                                                            {% if customer.status == key %}selected{% endif %}>{{ val }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="assistant_name"
+                                                   value="{{ customer.assistant_name }}"
+                                                   class="form-control" placeholder="Assistant Name"
+                                                   id="floatingAssistant">
+                                        </td>
+                                        <td>
+            <textarea name="notes" class="form-control" placeholder="Notes..." id="floatingNotes"
+                      style="height: 100px;">{{ customer.notes }}</textarea>
                                         </td>
                                         <td>{{ customer.created_at|date:"Y-m-d H:i" }}</td>
                                         <td>
-                                            <form method="POST" style="display:inline;">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="edit_id" value="{{ customer.id }}">
-                                                <button type="submit" class="btn btn-warning btn-sm">
-                                                    <i class="fas fa-pen"></i>
-                                                </button>
-                                            </form>
+                                            <button type="submit" name="save_edit" class="btn btn-success btn-sm">
+                                                <i class="fas fa-save"></i>
+                                            </button>
                                         </td>
                                         <td>
                                             <a href="{% url 'delete_customer' customer.id %}"
@@ -298,22 +286,50 @@
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                         </td>
-                                    </tr>
-                                {% endif %}
-                        {% endfor %}
+                                    </form>
+                                </tr>
+                            {% else %}
 
+                                <tr id="customer-{{ customer.id }}">
+                                    <td>{{ customer.full_name }}</td>
+                                    <td>{{ customer.platform }}</td>
+                                    <td>{{ customer.username }}</td>
+                                    <td>{{ customer.phone_number }}</td>
+                                    <td>
+                        <span class="status-badge status-{{ customer.status }}">
+                            {{ customer.get_status_display }}
+                        </span>
+                                    </td>
+                                    <td>{{ customer.assistant_name }}</td>
+                                    <td>
+                                        <div style="max-height: 75px; max-width: 500px; overflow-y: scroll; white-space: pre-line;">
+                                            {{ customer.notes }}
+                                        </div>
+                                    </td>
+                                    <td>{{ customer.created_at|date:"Y-m-d H:i" }}</td>
+                                    <td>
+                                        <form method="POST" style="display:inline;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="edit_id" value="{{ customer.id }}">
+                                            <button type="submit" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-pen"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'delete_customer' customer.id %}" class="btn btn-danger btn-sm"
+                                           onclick="return confirm('Are you sure?')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
-{#                <div class="text-center mt-4">#}
-{#                    <form method="POST" action="{% url 'crm' %}#customer-section" class="d-inline">#}
-{#                        {% csrf_token %}#}
-{#                        <input type="hidden" name="see_all" value="true">#}
-{#                        <button type="submit" class="btn btn-outline-light px-5 py-2 fw-bold">#}
-{#                            &laquo;&laquo;&laquo;&laquo;&laquo;&laquo; SEE ALL &raquo;&raquo;&raquo;&raquo;&raquo;&raquo;#}
-{#                        </button>#}
-{#                    </form>#}
-{#                </div>#}
+
+
             </div>
         </div>
     </div>

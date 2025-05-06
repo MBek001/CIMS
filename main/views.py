@@ -65,14 +65,11 @@ def logout_view(request):
 
 
 def payment_status(request, project_name):
-    """
-    Berilgan project uchun payment statusini qaytaradi.
-    """
     try:
         payment = Payment.objects.get(project=project_name)
         return JsonResponse({
             "project": payment.project,
-            "payment": payment.payment  # True yoki False qaytaradi
+            "payment": payment.payment
         })
     except Payment.DoesNotExist:
         return JsonResponse({

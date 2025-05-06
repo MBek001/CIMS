@@ -1,6 +1,6 @@
 from django import forms
 
-from ceo.models import Customer
+from ceo.models import Customer, Finance
 from main.models import Message
 
 class MessageForm(forms.ModelForm):
@@ -62,4 +62,15 @@ class CustomerForm(forms.ModelForm):
                 'id': 'floatingNotes',
                 'style': 'height: 100px'
             }),
+        }
+
+
+
+class FinanceForm(forms.ModelForm):
+    class Meta:
+        model = Finance
+        fields = ['service', 'summ', 'status', 'type', 'date']
+
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
         }

@@ -1,6 +1,7 @@
 from ceo import views, wordpres_projects_view, sales_crm_view
 from django.urls import path
 
+from ceo.finance import FinanceListView, finance_create, finance_update, finance_delete
 
 urlpatterns = [
     path('ceo/',views.ceo,name='ceo'),
@@ -18,6 +19,10 @@ urlpatterns = [
     path('api/site-status/', wordpres_projects_view.site_status),
     path('crm/', sales_crm_view.crm_view, name='crm'),
     path('crm/delete/<int:pk>/', sales_crm_view.delete_customer, name='delete_customer'),
+    path('finance/', FinanceListView.as_view(), name='finance_list'),
+    path('create/', finance_create, name='finance_create'),
+    path('<int:pk>/update/', finance_update, name='finance_update'),
+    path('<int:pk>/delete/', finance_delete, name='finance_delete'),
 
 
 ]

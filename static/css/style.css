@@ -3,7 +3,7 @@
     --primary: #EB1616;
     --secondary: #191C24;
     --light: #6C7293;
-    --dark: #000000;
+    --dark: rgba(0, 0, 0, 0.91);
 }
 
 .back-to-top {
@@ -82,6 +82,21 @@
     background: var(--dark);
     transition: 0.5s;
 }
+.wordpres-content {
+    margin-left: 50px;
+    min-height: 100vh;
+    background: var(--dark);
+    transition: 0.5s;
+}
+
+.finance-content {
+    width: 100%;
+    margin-left: 250px;
+    padding: 2rem;
+    color: #0c4128;
+    background-color: #f8f9fa;
+}
+
 
 @media (min-width: 992px) {
     .sidebar {
@@ -287,3 +302,7 @@
     background: var(--dark);
     border-color: var(--primary);
 }
+.white-input {
+        background-color: white !important;
+        color: black;
+    }

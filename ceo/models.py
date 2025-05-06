@@ -34,3 +34,22 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.full_name
+
+
+
+class Finance(models.Model):
+    STATUS_CHOICES = [
+        ('one_time', 'One_Time'),
+        ('monthly', 'Monthly'),
+    ]
+    TYPE_CHOICES = [
+        ('incomer', 'Income'),
+        ('outcomer', 'Outcome'),
+    ]
+    service=models.CharField(max_length=100)
+    summ=models.CharField(max_length=100)
+    status=models.CharField(max_length=50,choices=STATUS_CHOICES)
+    type = models.CharField(max_length=50, choices=TYPE_CHOICES)
+    date=models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+
