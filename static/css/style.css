@@ -71,7 +71,7 @@
     width: 250px;
     height: 100vh;
     overflow-y: auto;
-    background: var(--secondary);
+    background: #F0F7FF;
     transition: 0.5s;
     z-index: 999;
 }
@@ -79,21 +79,21 @@
 .content {
     margin-left: 250px;
     min-height: 100vh;
-    background: var(--dark);
+    background: white;
     transition: 0.5s;
 }
 .wordpres-content {
     margin-left: 50px;
     min-height: 100vh;
-    background: var(--dark);
+    background: white;
     transition: 0.5s;
 }
 
 .finance-content {
     width: 100%;
-    margin-left: 250px;
+
     padding: 2rem;
-    color: #0c4128;
+    color: red;
     background-color: #f8f9fa;
 }
 
@@ -145,9 +145,9 @@
 
 .sidebar .navbar .navbar-nav .nav-link:hover,
 .sidebar .navbar .navbar-nav .nav-link.active {
-    color: var(--primary);
-    background: var(--dark);
-    border-color: var(--primary);
+  color: rgb(0, 156, 255) !important;
+  background: white;
+  border-color: rgb(0, 156, 255) !important;
 }
 
 .sidebar .navbar .navbar-nav .nav-link i {
@@ -156,13 +156,13 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--dark);
+    background: white;
     border-radius: 40px;
 }
 
 .sidebar .navbar .navbar-nav .nav-link:hover i,
 .sidebar .navbar .navbar-nav .nav-link.active i {
-    background: var(--secondary);
+    background: white;
 }
 
 .sidebar .navbar .dropdown-toggle::after {
@@ -200,7 +200,7 @@
 
 .content .navbar .navbar-nav .nav-link:hover,
 .content .navbar .navbar-nav .nav-link.active {
-    color: var(--primary);
+    color: blue;
 }
 
 .content .navbar .sidebar-toggler,
@@ -210,7 +210,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: var(--dark);
+    background: white;
     border-radius: 40px;
 }
 
@@ -305,4 +305,175 @@
 .white-input {
         background-color: white !important;
         color: black;
-    }
+}
+
+
+
+
+.bg-secondary {
+    background-color: #F0F7FF !important; /* Bootstrap stilini bekor qiladi */
+}
+
+.text-primary {
+  color: rgb(0, 156, 255) !important;
+}
+
+h6.mb-0 {
+    color: #000000 !important; /* qora rang */
+}
+h3.mb-0 {
+    color: #000000 !important; /* qora rang */
+}
+.text-white {
+color:black !important;
+}
+
+
+table.table tbody tr:hover {
+    background-color: #DBEAFE !important; /* och pastel ko‘k */
+}
+
+.form-control {
+
+  color: white;
+  background-color: white;
+  border: 1px solid #000;
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25) !important; /* ko‘k soya */
+
+}
+
+.form-control:focus {
+    background-color: #E0F2FF !important; /* och ko‘k */
+    color: #000 !important;               /* qora matn */
+    border-color: #3B82F6 !important;     /* ko‘k chegara */
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25) !important; /* ko‘k soya */
+}
+
+.btn-primary:hover {
+  color: white !important;
+  background-color: rgb(0, 156, 255) !important;
+  border-color:rgb(0, 156, 255) !important;
+}
+
+.btn-primary {
+    background-color:rgb(0, 156, 255) !important; /* yorqin ko'k */
+    border-color: #3B82F6 !important;
+    color: #ffffff !important; /* oq matn */
+}
+
+
+h3 {
+    color: #3B82F6 !important;
+}
+
+
+.col-lg-10 {
+    margin-top: 30px; /* yoki 3rem */
+}
+
+
+.table-dark td,
+.table-dark th,
+.table-dark {
+    background-color: #ffffff !important; /* Oq fon */
+    color: #000000 !important;            /* Qora matn */
+    border-color: blue !important;
+}
+
+
+.form-control,
+textarea,
+select {
+    background-color: #FFFFFF !important;  /* Oq fon */
+    color: #000000 !important;             /* Qora matn */
+    border: 1px solid #CED4DA !important;  /* Yengil kulrang chegara */
+}
+
+.card.bg-dark,
+.card.bg-black,
+.card {
+    background-color: #FFFFFF !important;
+    color: black !important;
+}
+
+input[type="search"],
+input[type="text"] {
+    background-color: #FFFFFF !important;
+    color: black !important;
+}
+
+label,
+.form-label,
+.form-floating > label {
+    color: #000000 !important;  /* qora rangga o'zgartiramiz */
+}
+
+
+.form-floating select.form-select,
+.form-floating textarea.form-control,
+.form-floating input.form-control {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+
+.mb-3{
+color:blue}
+
+
+.finance-content {
+    background-color: #ffffff !important; /* Oq fon */
+    color: #000000 !important;            /* Qora matn */
+}
+
+
+.finance-content .card,
+.finance-content .card-body,
+.finance-content .card-title,
+.finance-content h5,
+.finance-content td,
+.finance-content th {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+.card-balance {
+    background-color: #ffffff !important; /* Oq fon */
+    color: #000000 !important;            /* Matn qora bo'ladi */
+    border:1px solid blue !important;
+}
+
+.card-balance h2,
+.card-balance h5 {
+    color: #000000 !important;            /* Matnni ham qora qilamiz */
+}
+
+
+.total-balance,
+.potential-balance {
+    background-color: #ffffff !important; /* oq fon */
+    color: #000000 !important;            /* qora matn */
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid blue;
+}
+
+.total-balance h5,
+.total-balance h2,
+.potential-balance h5,
+.potential-balance h2 {
+    color: #000000 !important;            /* matnni qora qilish */
+}
+
+
+.nav-tabs .nav-link.active {
+    background-color: #3B82F6 !important; /* Ko‘k fon */
+    color: #ffffff !important;            /* Oq matn */
+    border-color: #3B82F6 !important;     /* Ko‘k border */
+}
+
+.nav-tabs .nav-link {
+    background-color: #8de0ff !important; /* Ko‘k fon */
+    color: #ffffff !important;            /* Oq matn */
+    border-color: #3B82F6 !important;     /* Ko‘k border */
+}

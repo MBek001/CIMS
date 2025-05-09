@@ -37,19 +37,29 @@ class Customer(models.Model):
 
 
 
+from django.db import models
+
 class Finance(models.Model):
     STATUS_CHOICES = [
-        ('one_time', 'One_Time'),
+        ('one_time', 'One-Time'),
         ('monthly', 'Monthly'),
     ]
     TYPE_CHOICES = [
         ('incomer', 'Income'),
         ('outcomer', 'Outcome'),
     ]
-    service=models.CharField(max_length=100)
-    summ=models.CharField(max_length=100)
-    status=models.CharField(max_length=50,choices=STATUS_CHOICES)
+    CARD_CHOICES = [
+        ('card1', 'Card 1'),
+        ('card2', 'Card 2'),
+        ('card3', 'Card 3'),
+    ]
+    service = models.CharField(max_length=100)
+    summ = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES)
     type = models.CharField(max_length=50, choices=TYPE_CHOICES)
-    date=models.CharField(max_length=50)
+    card = models.CharField(max_length=50, choices=CARD_CHOICES)
+    date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-date']

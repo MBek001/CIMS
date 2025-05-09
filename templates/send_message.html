@@ -4,14 +4,22 @@
    <style>
    .container{
        margin-top: 80px;
-       background-color: #0f1116;
-       padding: 20px;
+       background-color: white !important;
+
    }
+   select.form-control,
+textarea.form-control,
+input.form-control {
+    background-color: #ffffff !important; /* Oq fon */
+    color: #000000 !important;            /* Qora matn */
+    border: 1px solid #CED4DA !important; /* Yengil kulrang chegara */
+}
+
    
 
    
    .container form select {
-       background-color: #1c1e22 !important;/* Dark background color for the select element */
+       background-color: white !important;/* Dark background color for the select element */
         /* White text color for readability */
        border: 1px solid #333; /* Optional: border color for better visibility */
        padding: 10px; /* Add padding to make the dropdown look better */
@@ -20,7 +28,7 @@
 
    /* Optional: Style the option elements to match the container background */
    .container form select option {
-       background-color: #1c1e22; /* Match the dropdown background color */
+       background-color: white; /* Match the dropdown background color */
        color: #ffffff; /* White text color */
    }
    h2{

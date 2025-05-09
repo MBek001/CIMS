@@ -66,11 +66,21 @@ class CustomerForm(forms.ModelForm):
 
 
 
+from django import forms
+from .models import Finance
+
 class FinanceForm(forms.ModelForm):
     class Meta:
         model = Finance
-        fields = ['service', 'summ', 'status', 'type', 'date']
-
+        fields = ['type', 'status', 'card', 'service', 'summ', 'date']
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
+            'summ': forms.NumberInput(attrs={'step': '0.01'}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        summ = cleaned_data.get('summ')
+        if summ is not None and summ <= 0:
+            self.add_error('summ', 'Amount must be positive')
+        return cleaned_data

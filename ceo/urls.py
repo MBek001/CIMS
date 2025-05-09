@@ -1,7 +1,7 @@
 from ceo import views, wordpres_projects_view, sales_crm_view
 from django.urls import path
 
-from ceo.finance import FinanceListView, finance_create, finance_update, finance_delete
+from ceo.finance import FinanceListView, finance_transfer,finance_create, finance_update, finance_delete
 
 urlpatterns = [
     path('ceo/',views.ceo,name='ceo'),
@@ -23,6 +23,8 @@ urlpatterns = [
     path('create/', finance_create, name='finance_create'),
     path('<int:pk>/update/', finance_update, name='finance_update'),
     path('<int:pk>/delete/', finance_delete, name='finance_delete'),
+    # path('finance/api/transactions/', finance_transactions_api, name='finance_transactions_api'),
+    path('finance/transfer/', finance_transfer, name='finance_transfer'),
 
 
 ]

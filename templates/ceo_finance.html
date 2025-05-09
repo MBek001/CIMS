@@ -2,16 +2,12 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <title>Cognilabs | Dashboard</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
-
-    <!-- Favicon -->
-    {#    <link href="{% static 'img/favicon.ico' %}" rel="icon">#}
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,15 +22,143 @@
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet'/>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
 
-    <!-- Libraries Stylesheet -->
-    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
-    <link href="{% static 'lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet"/>
-
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 
     <!-- Template Stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <style>
+        .finance-content {
+            background-color: black;
+        }
+
+        .card-body {
+            background-color: #191C24;
+        }
+
+        html, body {
+            overflow-x: hidden;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            max-width: calc(100% - 260px);
+            padding: 2rem 1rem;
+        }
+
+        #finance-form, #transfer-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        #finance-form .mb-3, #transfer-form .mb-3 {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 0;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        #finance-form .form-label, #transfer-form .form-label {
+            margin-right: 0.5rem;
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        #finance-form .form-select,
+        #finance-form .form-control,
+        #transfer-form .form-select,
+        #transfer-form .form-control {
+            width: 150px;
+        }
+
+        #finance-form .btn, #transfer-form .btn {
+            margin-left: 1rem;
+            margin-top: 0;
+        }
+
+        .d-flex button {
+            margin-right: 10px;
+        }
+
+        #back-btn {
+            display: none;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .back-btn {
+            display: none;
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+            color: white;
+        }
+
+        .update-btn {
+            background-color: #2ea44f;
+            border-color: #2ea44f;
+        }
+
+        .update-btn:focus, .update-btn:hover {
+            background-color: #2c974b;
+            border-color: #2c974b;
+        }
+
+        .card-balance {
+            background-color: #2c2f3a;
+            border-radius: 8px;
+            padding: 1rem;
+            color: white;
+        }
+
+        .total-balance {
+            background-color: #2c2f3a;
+            border-radius: 8px;
+            padding: 1rem;
+            color: white;
+            margin-top: 1rem;
+        }
+
+        .potential-balance {
+            background-color: #2c2f3a;
+            border-radius: 8px;
+            padding: 1rem;
+            color: white;
+            margin-top: 1rem;
+        }
+
+        #transfer-history-modal .modal-content {
+            background-color: #191C24;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
@@ -77,35 +201,32 @@
                 <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
             </a>
             <div class="navbar-nav align-items-center ms-auto">
-                <div class="navbar-nav align-items-center ms-auto">
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="fa fa-envelope me-lg-2"></i>
-                            <span class="d-none d-lg-inline-flex">{{ user.received_messages.count }} Messages</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                            {% for message in user.received_messages.all %}
-                                <a href="{% url 'message_detail' message.id %}" class="dropdown-item">
-                                    <div class="d-flex align-items-center">
-                                        <img class="rounded-circle"
-                                             src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg"
-                                             alt="" style="width: 40px; height: 40px;">
-                                        <div class="ms-2">
-                                            <h6 class="fw-normal mb-0">{{ message.sender.name }} sent you a message</h6>
-                                            <small>{{ message.subject }}</small>
-                                            <small>{{ message.timestamp|date:"d M Y H:i" }}</small>
-                                        </div>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fa fa-envelope me-lg-2"></i>
+                        <span class="d-none d-lg-inline-flex">{{ user.received_messages.count }} Messages</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                        {% for message in user.received_messages.all %}
+                            <a href="{% url 'message_detail' message.id %}" class="dropdown-item">
+                                <div class="d-flex align-items-center">
+                                    <img class="rounded-circle"
+                                         src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg"
+                                         alt="" style="width: 40px; height: 40px;">
+                                    <div class="ms-2">
+                                        <h6 class="fw-normal mb-0">{{ message.sender.name }} sent you a message</h6>
+                                        <small>{{ message.subject }}</small>
+                                        <small>{{ message.timestamp|date:"d M Y H:i" }}</small>
                                     </div>
-                                </a>
-                                <hr class="dropdown-divider">
-                            {% empty %}
-                                <p>No messages</p>
-                            {% endfor %}
-                            <a href="{% url 'message_list' %}" class="dropdown-item text-center">See all messages</a>
-                        </div>
+                                </div>
+                            </a>
+                            <hr class="dropdown-divider">
+                        {% empty %}
+                            <p>No messages</p>
+                        {% endfor %}
+                        <a href="{% url 'message_list' %}" class="dropdown-item text-center">See all messages</a>
                     </div>
                 </div>
-
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fa fa-bell me-lg-2"></i>
@@ -133,19 +254,102 @@
                 </div>
             </div>
         </nav>
+        <!-- Navbar End -->
 
+        <!-- Table and Form Section -->
         <div class="finance-content mt-5">
-            <h2 class="text-center mb-4">Finance Dashboard</h2>
 
-            <!-- Income / Outcome Toggle Buttons -->
-            <div class="d-flex justify-content-center mb-4">
-                <button class="btn btn-outline-primary mx-2 active" id="incomeBtn">Income</button>
-                <button class="btn btn-outline-danger mx-2" id="outcomeBtn">Outcome</button>
+            <!-- Card Balances -->
+            <div class="finance-monitoring mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Card Balances</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card-balance">
+                                    <h5>Card 1 Balance</h5>
+                                    <h2 class="card1-balance">0</h2>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card-balance">
+                                    <h5>Card 2 Balance</h5>
+                                    <h2 class="card2-balance">0</h2>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card-balance">
+                                    <h5>Card 3 Balance</h5>
+                                    <h2 class="card3-balance">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="total-balance">
+                                    <h5>Total Balance</h5>
+                                    <h2 class="total-balance-amount">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="potential-balance">
+                                    <h5>Potential Balance (After Outcomes)</h5>
+                                    <h2 class="potential-balance-amount">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Transfer Form -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Transfer Between Cards</h5>
+                    <form method="post" action="{% url 'finance_transfer' %}" id="transfer-form">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="from_card" class="form-label">From Card</label>
+                            <select name="from_card" id="from_card" class="form-select" required>
+                                <option value="">Select Card</option>
+                                <option value="card1">Card 1</option>
+                                <option value="card2">Card 2</option>
+                                <option value="card3">Card 3</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="to_card" class="form-label">To Card</label>
+                            <select name="to_card" id="to_card" class="form-select" required>
+                                <option value="">Select Card</option>
+                                <option value="card1">Card 1</option>
+                                <option value="card2">Card 2</option>
+                                <option value="card3">Card 3</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="transfer_amount" class="form-label">Amount</label>
+                            <input type="number" name="amount" id="transfer_amount" class="form-control" step="0.01" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Transfer</button>
+                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#transferHistoryModal">Transfer History</button>
+                    </form>
+                </div>
+            </div>
+
 
             <!-- Tabs for One-Time and Monthly -->
             <div class="card">
                 <div class="card-body">
+
+
+                             <!-- Income / Outcome Toggle Buttons -->
+            <div class="d-flex justify-content-center mb-4">
+                <button class="btn btn-outline-primary mx-2 active" id="incomerBtn">Income</button>
+                <button class="btn btn-outline-danger mx-2" id="outcomerBtn">Outcome</button>
+            </div>
+
                     <ul class="nav nav-tabs" id="financeTab" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="one-time-tab" data-bs-toggle="tab" data-bs-target="#one-time" type="button" role="tab">One-Time</button>
@@ -164,7 +368,9 @@
                                         <tr>
                                             <th>Service</th>
                                             <th>Amount</th>
+                                            <th>Card</th>
                                             <th>Date</th>
+                                            <th>Type</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -172,15 +378,19 @@
                                         {% for item in finances %}
                                             {% if item.status == 'one_time' %}
                                                 <tr class="one-time-row {{ item.type }}" data-id="{{ item.id }}">
-                                                    <td>{{ item.service }}</td>
-                                                    <td>{{ item.summ }}</td>
-                                                    <td>{{ item.date }}</td>
+                                                    <td>{{ item.service|default:"N/A" }}</td>
+                                                    <td>{{ item.summ|default:"0" }}</td>
+                                                    <td>{{ item.card|default:"N/A" }}</td>
+                                                    <td>{{ item.date|date:"Y-m-d"|default:"N/A" }}</td>
+                                                    <td>{{ item.type|default:"N/A" }}</td>
                                                     <td>
                                                         <a href="{% url 'finance_update' item.pk %}" class="btn btn-sm btn-primary edit-btn">Edit</a>
                                                         <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="{{ item.pk }}">Delete</button>
                                                     </td>
                                                 </tr>
                                             {% endif %}
+                                        {% empty %}
+                                            <tr><td colspan="6">No data available</td></tr>
                                         {% endfor %}
                                     </tbody>
                                 </table>
@@ -196,7 +406,9 @@
                                         <tr>
                                             <th>Service</th>
                                             <th>Amount</th>
+                                            <th>Card</th>
                                             <th>Date</th>
+                                            <th>Type</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -204,15 +416,19 @@
                                         {% for item in finances %}
                                             {% if item.status == 'monthly' %}
                                                 <tr class="monthly-row {{ item.type }}" data-id="{{ item.id }}">
-                                                    <td>{{ item.service }}</td>
-                                                    <td>{{ item.summ }}</td>
-                                                    <td>{{ item.date }}</td>
+                                                    <td>{{ item.service|default:"N/A" }}</td>
+                                                    <td>{{ item.summ|default:"0" }}</td>
+                                                    <td>{{ item.card|default:"N/A" }}</td>
+                                                    <td>{{ item.date|date:"Y-m-d"|default:"N/A" }}</td>
+                                                    <td>{{ item.type|default:"N/A" }}</td>
                                                     <td>
                                                         <a href="{% url 'finance_update' item.pk %}" class="btn btn-sm btn-primary edit-btn">Edit</a>
                                                         <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="{{ item.pk }}">Delete</button>
                                                     </td>
                                                 </tr>
                                             {% endif %}
+                                        {% empty %}
+                                            <tr><td colspan="6">No data available</td></tr>
                                         {% endfor %}
                                     </tbody>
                                 </table>
@@ -231,32 +447,84 @@
                         <input type="hidden" id="edit-id" name="edit_id" value="">
                         <div class="mb-3">
                             <label for="id_type" class="form-label">Type</label>
-                            {{ form.type }}
+                            <select name="type" id="id_type" class="form-select" required>
+                                <option value="">Select Type</option>
+                                <option value="incomer">Income</option>
+                                <option value="outcomer">Outcome</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="id_status" class="form-label">Frequency</label>
-                            {{ form.status }}
+                            <select name="status" id="id_status" class="form-select" required>
+                                <option value="">Select Frequency</option>
+                                <option value="one_time">One-Time</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_card" class="form-label">Card</label>
+                            <select name="card" id="id_card" class="form-select" required>
+                                <option value="">Select Card</option>
+                                <option value="card1">Card 1</option>
+                                <option value="card2">Card 2</option>
+                                <option value="card3">Card 3</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="id_service" class="form-label">Service</label>
-                            {{ form.service }}
+                            <input type="text" name="service" id="id_service" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label for="id_summ" class="form-label">Amount</label>
-                            {{ form.summ }}
+                            <input type="number" name="summ" id="id_summ" class="form-control" step="0.01" required>
                         </div>
                         <div class="mb-3">
                             <label for="id_date" class="form-label">Date</label>
-                            {{ form.date }}
+                            <input type="date" name="date" id="id_date" class="form-control" required>
                         </div>
-                        <button type="submit" class="btn btn-success">Add</button>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-secondary back-btn" style="display: none;">Back</button>
+                            <button type="submit" class="btn btn-success submit-btn add-btn">Add</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
 
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+    </div>
+    <!-- Content End -->
+</div>
+
+<!-- Transfer History Modal -->
+<div class="modal fade" id="transferHistoryModal" tabindex="-1" aria-labelledby="transferHistoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="transferHistoryModalLabel">Transfer History</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="transfer-history-table">
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th>Amount</th>
+                                <th>From Card</th>
+                                <th>To Card</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- JavaScript Libraries -->
@@ -270,53 +538,50 @@
 <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js' %}"></script>
 <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
 
-
 <script>
 $(document).ready(function() {
-    // Store current view state
-    let currentType = 'income';
+    let currentType = 'incomer';
     let currentTab = 'one-time';
 
-    // Initialize view
     updateView();
+    calculateCardBalances();
 
-    // Income/Outcome toggle
-    $('#incomeBtn, #outcomeBtn').click(function() {
-        $('#incomeBtn, #outcomeBtn').removeClass('active');
+    $('#incomerBtn, #outcomerBtn').click(function() {
+        $('#incomerBtn, #outcomerBtn').removeClass('active');
         $(this).addClass('active');
         currentType = $(this).attr('id').replace('Btn', '');
         updateView();
     });
 
-    // Tab change
     $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
         currentTab = $(e.target).attr('data-bs-target').replace('#', '');
         updateTitles();
     });
 
-    // Delete button handler
     $(document).on('click', '.delete-btn', function() {
         const id = $(this).data('id');
         if (confirm('Are you sure you want to delete this entry?')) {
             $.ajax({
-                url: '{% url "finance_delete" 0 %}'.replace('0', id),
+                url: '/c/' + id + '/delete/',
                 method: 'POST',
-                data: {
-                    'csrfmiddlewaretoken': '{{ csrf_token }}'
-                },
+                data: {'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()},
                 success: function(response) {
                     if (response.success) {
                         $(`tr[data-id="${id}"]`).remove();
+                        calculateCardBalances();
+                        alert('Successfully deleted');
+                    } else {
+                        alert('Failed to delete entry');
                     }
                 },
-                error: function() {
-                    alert('Error deleting entry');
+                error: function(xhr) {
+                    console.log('Error Response:', xhr.responseText);
+                    alert('Error deleting entry: ' + (xhr.statusText || 'Unknown error'));
                 }
             });
         }
     });
 
-    // Edit button handler
     $(document).on('click', '.edit-btn', function(e) {
         e.preventDefault();
         const url = $(this).attr('href');
@@ -325,26 +590,37 @@ $(document).ready(function() {
             form.find('#edit-id').val(data.id);
             form.find('#id_type').val(data.type);
             form.find('#id_status').val(data.status);
+            form.find('#id_card').val(data.card);
             form.find('#id_service').val(data.service);
             form.find('#id_summ').val(data.summ);
             form.find('#id_date').val(data.date);
-            form.find('button[type="submit"]').text('Update');
 
-            // Scroll to form
-            $('html, body').animate({
-                scrollTop: form.offset().top - 100
-            }, 500);
+            form.find('.submit-btn').text('Update').addClass('update-btn').removeClass('add-btn');
+            $('.back-btn').show();
+
+            $('html, body').animate({scrollTop: form.offset().top - 100}, 500);
         }).fail(function() {
             alert('Error loading entry data');
         });
     });
 
-    // Form submission handler
+    $(document).on('click', '.back-btn', function() {
+        resetForm();
+    });
+
+    function resetForm() {
+        const form = $('#finance-form');
+        form.trigger('reset');
+        form.find('#edit-id').val('');
+        form.find('.submit-btn').text('Add').addClass('add-btn').removeClass('update-btn');
+        $('.back-btn').hide();
+    }
+
     $('#finance-form').submit(function(e) {
         e.preventDefault();
         const form = $(this);
         const isEdit = form.find('#edit-id').val() !== '';
-        const url = isEdit ? '{% url "finance_update" 0 %}'.replace('0', form.find('#edit-id').val()) : form.attr('action');
+        const url = isEdit ? '/finance/update/' + form.find('#edit-id').val() + '/' : form.attr('action');
 
         $.ajax({
             url: url,
@@ -353,61 +629,227 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.success) {
                     if (isEdit) {
-                        // Update existing row
                         const row = $(`tr[data-id="${response.id}"]`);
                         row.find('td:eq(0)').text(response.service);
                         row.find('td:eq(1)').text(response.summ);
-                        row.find('td:eq(2)').text(response.date);
+                        row.find('td:eq(2)').text(response.card);
+                        row.find('td:eq(3)').text(response.date);
+                        row.find('td:eq(4)').text(response.type);
+                        row.removeClass('incomer outcomer').addClass(response.type);
+                        alert('Muvaffiqiyatli yangilandi');
                     } else {
-                        // Add new row
                         const row = `
                             <tr class="${response.status === 'one_time' ? 'one-time' : 'monthly'}-row ${response.type}" data-id="${response.id}">
                                 <td>${response.service}</td>
                                 <td>${response.summ}</td>
+                                <td>${response.card}</td>
                                 <td>${response.date}</td>
+                                <td>${response.type}</td>
                                 <td>
                                     <a href="/finance/update/${response.id}/" class="btn btn-sm btn-primary edit-btn">Edit</a>
                                     <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="${response.id}">Delete</button>
                                 </td>
                             </tr>
                         `;
-                        $(`#${response.status === 'one_time' ? 'one-time' : 'monthly'}-body`).append(row);
+                        const targetTable = response.status === 'one_time' ? '#one-time-body' : '#monthly-body';
+                        $(targetTable).append(row);
+                        alert(response.message || 'Muvaffiqiyatli q\'oshildi');
                     }
-
-                    // Reset form
-                    form.trigger('reset');
-                    form.find('#edit-id').val('');
-                    form.find('button[type="submit"]').text('Add');
+                    calculateCardBalances();
+                    resetForm();
+                } else {
+                    alert('Failed to save entry: ' + JSON.stringify(response.errors || 'Unknown error'));
                 }
             },
             error: function(xhr) {
                 if (xhr.responseJSON && xhr.responseJSON.errors) {
-                    // Display form errors
                     alert('Please fix the errors: ' + JSON.stringify(xhr.responseJSON.errors));
                 } else {
-                    alert('Error saving entry');
+                    alert('Error saving entry: ' + (xhr.statusText || 'Unknown error'));
                 }
             }
         });
     });
 
-    function updateView() {
-        // Show/hide rows based on current type
-        $('.one-time-row, .monthly-row').each(function() {
-            $(this).toggle($(this).hasClass(currentType));
+    $('#transfer-form').submit(function(e) {
+        e.preventDefault();
+        const form = $(this);
+        $.ajax({
+            url: form.attr('action'),
+            method: 'POST',
+            data: form.serialize(),
+            success: function(response) {
+                if (response.success) {
+                    const fromRow = `
+                        <tr class="one-time-row outcomer" data-id="${response.from_id}">
+                            <td>Transfer to ${response.to_card}</td>
+                            <td>${response.amount}</td>
+                            <td>${response.from_card}</td>
+                            <td>${response.date}</td>
+                            <td>outcomer</td>
+                            <td>
+                                <a href="/finance/update/${response.from_id}/" class="btn btn-sm btn-primary edit-btn">Edit</a>
+                                <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="${response.from_id}">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                    const toRow = `
+                        <tr class="one-time-row incomer" data-id="${response.to_id}">
+                            <td>Transfer from ${response.from_card}</td>
+                            <td>${response.amount}</td>
+                            <td>${response.to_card}</td>
+                            <td>${response.date}</td>
+                            <td>incomer</td>
+                            <td>
+                                <a href="/finance/update/${response.to_id}/" class="btn btn-sm btn-primary edit-btn">Edit</a>
+                                <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="${response.to_id}">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                    $('#one-time-body').append(fromRow).append(toRow);
+                    calculateCardBalances();
+                    form.trigger('reset');
+                    alert('Transfer successful');
+                } else {
+                    alert('Transfer failed: ' + (response.error || 'Unknown error'));
+                }
+            },
+            error: function(xhr) {
+                alert('Error processing transfer: ' + (xhr.statusText || 'Unknown error'));
+            }
         });
+    });
 
-        // Update titles
+    function updateView() {
+        $('.one-time-row, .monthly-row').each(function() {
+            const $row = $(this);
+            const rowType = $row.attr('class').match(/incomer|outcomer/);
+            const isVisible = rowType && rowType[0] === currentType;
+            $row.toggle(isVisible || !rowType);
+        });
         updateTitles();
     }
 
     function updateTitles() {
-        const typeName = currentType === 'income' ? 'Income' : 'Outcome';
+        const typeName = currentType === 'incomer' ? 'Income' : 'Outcome';
         const tabName = currentTab === 'one-time' ? 'One-Time' : 'Monthly';
         $(`#${currentTab}-title`).text(`${tabName} ${typeName}`);
     }
+
+    function calculateCardBalances() {
+        let card1Balance = 0;
+        let card2Balance = 0;
+        let card3Balance = 0;
+        const today = new Date();
+
+        $('.one-time-row, .monthly-row').each(function() {
+            const $row = $(this);
+            const amount = parseFloat($row.find('td:eq(1)').text().replace(/,/g, '')) || 0;
+            const card = $row.find('td:eq(2)').text();
+            const isIncome = $row.hasClass('incomer');
+            const isMonthly = $row.hasClass('monthly-row');
+            const dateStr = $row.find('td:eq(3)').text();
+            let date = new Date(dateStr);
+
+            const isCurrentMonth = date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+
+            if (card === 'card1') {
+                if (isIncome) {
+                    card1Balance += amount;
+                } else {
+                    card1Balance -= amount;
+                }
+            } else if (card === 'card2') {
+                if (isIncome) {
+                    card2Balance += amount;
+                } else {
+                    card2Balance -= amount;
+                }
+            } else if (card === 'card3') {
+                if (isIncome) {
+                    if (isMonthly && isCurrentMonth) {
+                        card3Balance += amount;
+                    } else if (!isMonthly) {
+                        card3Balance += amount;
+                    }
+                } else {
+                    if (isMonthly && isCurrentMonth) {
+                        card3Balance -= amount;
+                    } else if (!isMonthly) {
+                        card3Balance -= amount;
+                    }
+                }
+            }
+        });
+
+        const totalBalance = card1Balance + card2Balance + card3Balance;
+
+        // Calculate outcomes from May 1 to May 30 (or current month range)
+        const startDate = new Date(today.getFullYear(), 4, 1); // May 1, 2025
+        const endDate = new Date(today.getFullYear(), 4, 30); // May 30, 2025
+        let totalOutcomes = 0;
+        $('.one-time-row, .monthly-row').each(function() {
+            const $row = $(this);
+            const amount = parseFloat($row.find('td:eq(1)').text().replace(/,/g, '')) || 0;
+            const isOutcome = $row.hasClass('outcomer');
+            const dateStr = $row.find('td:eq(3)').text();
+            let date = new Date(dateStr);
+
+            if (isOutcome && date >= startDate && date <= endDate) {
+                totalOutcomes += amount;
+            }
+        });
+
+        const potentialBalance = totalBalance - totalOutcomes;
+
+        function formatAmount(amount) {
+            return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        }
+
+        $('.card1-balance').text(formatAmount(card1Balance));
+        $('.card2-balance').text(formatAmount(card2Balance));
+        $('.card3-balance').text(formatAmount(card3Balance));
+        $('.total-balance-amount').text(formatAmount(totalBalance));
+        $('.potential-balance-amount').text(formatAmount(potentialBalance));
+    }
+
+    $(document).ajaxComplete(function(event, xhr, settings) {
+        if (settings.url.includes('/finance/create') ||
+            settings.url.includes('/update/') ||
+            settings.url.includes('/delete/') ||
+            settings.url.includes('/transfer/')) {
+            calculateCardBalances();
+        }
+    });
+
+    // Transfer History Modal
+    $('#transferHistoryModal').on('show.bs.modal', function () {
+        const tbody = $('#transfer-history-table tbody');
+        tbody.empty();
+
+        $('.one-time-row, .monthly-row').each(function() {
+            const $row = $(this);
+            const service = $row.find('td:eq(0)').text();
+            const amount = $row.find('td:eq(1)').text();
+            const fromCard = $row.find('td:eq(2)').text();
+            const toCard = service.startsWith('Transfer to') ? service.replace('Transfer to ', '') : (service.startsWith('Transfer from') ? $row.find('td:eq(2)').text() : '');
+            const date = $row.find('td:eq(3)').text();
+            const isTransfer = service.startsWith('Transfer to') || service.startsWith('Transfer from');
+
+            if (isTransfer) {
+                tbody.append(`
+                    <tr>
+                        <td>${service}</td>
+                        <td>${amount}</td>
+                        <td>${fromCard}</td>
+                        <td>${toCard}</td>
+                        <td>${date}</td>
+                    </tr>
+                `);
+            }
+        });
+    });
 });
 </script>
-
 </body>
 </html>
