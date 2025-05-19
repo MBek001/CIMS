@@ -68,7 +68,7 @@ class Finance(models.Model):
     card = models.CharField(max_length=20, choices=CARD_CHOICES)
     service = models.CharField(max_length=255)
     summ = models.DecimalField(max_digits=15, decimal_places=2)
-    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
+    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='UZS')
     date = models.DateField()
     donation = models.DecimalField(max_digits=15, decimal_places=2, default=0)
     donation_percentage = models.DecimalField(max_digits=5, decimal_places=2, default=0)
