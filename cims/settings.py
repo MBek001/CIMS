@@ -82,16 +82,13 @@ AUTHENTICATION_BACKENDS = [
 # }
 
 DATABASES = {
-
-
-
     'default': {
-        # 'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': 'cims$default',
-        # 'USER': 'cims',
-        # 'PASSWORD': '5498603Ma.',
-        # 'HOST': 'cims.mysql.pythonanywhere-services.com',
-        # 'PORT': '3306',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cims$default',
+        'USER': 'cims',
+        'PASSWORD': '5498603Ma.',
+        'HOST': 'cims.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
     },
     'logistic': {
         'ENGINE': 'django.db.backends.mysql',
