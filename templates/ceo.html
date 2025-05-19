@@ -10,8 +10,6 @@
     <meta content="" name="keywords">
     <meta content="" name="description">
 
-
-
     <!-- Favicon -->
     {#    <link href="{% static 'img/favicon.ico' %}" rel="icon">#}
 
@@ -23,7 +21,6 @@
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
 
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
@@ -42,7 +39,6 @@
 <body>
 <div class="container-fluid position-relative d-flex p-0">
 
-
     <!-- Sidebar Start -->
     <div class="sidebar pe-4 pb-3">
         <nav class="navbar bg-secondary navbar-dark">
@@ -56,20 +52,43 @@
                 </div>
                 <div class="ms-3">
                     <h6 class="mb-0">{{ user.name }}</h6>
-                    <span>{{ user.email}}</span>
+                    <span>{{ user.email }}</span>
                 </div>
             </div>
             <div class="navbar-nav w-100">
-                <a href="{% url 'ceo' %}" class="nav-item nav-link active"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
-                <a href="{% url  'payment_list' %}" class="nav-item nav-link "><i class="fa fa-credit-card me-2"></i>Payment</a>
-                <a href="{% url 'project_toggle' %}" class="nav-item nav-link"><i class="fab fa-wordpress me-2"></i>WordPress</a>
-                <a href="{% url  'crm' %}" class="nav-item nav-link"><i class="fa fa-users me-2"></i>Sales CRM</a>
-                <a href="{% url  'finance_list' %}" class="nav-item nav-link "><i class="fa fa-money-bill-wave me-2"></i>Finance</a>
+                {% if user.company_code == 'oddiy' or user.company_code == 'ceo' %}
+                    {% for permission in user.page_permissions.all %}
+                        {% if permission.page_name == 'ceo' %}
+                            <a href="{% url 'user_dashboard' company_code=user.company_code %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'user_dashboard' %}active{% endif %}">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        {% elif permission.page_name == 'payment_list' %}
+                            <a href="{% url 'payment_list' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'payment_list' %}active{% endif %}">
+                                <i class="fa fa-credit-card me-2"></i>Payment
+                            </a>
+                        {% elif permission.page_name == 'project_toggle' %}
+                            <a href="{% url 'project_toggle' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'project_toggle' %}active{% endif %}">
+                                <i class="fab fa-wordpress me-2"></i>Wordpress
+                            </a>
+                        {% elif permission.page_name == 'crm' %}
+                            <a href="{% url 'crm' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'crm' %}active{% endif %}">
+                                <i class="fa fa-users me-2"></i>Sales CRM
+                            </a>
+                        {% elif permission.page_name == 'finance_list' %}
+                            <a href="{% url 'finance_list' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'finance_list' %}active{% endif %}">
+                                <i class="fa fa-money-bill-wave me-2"></i>Finance
+                            </a>
+                        {% endif %}
+                    {% empty %}
+                        <p class="text-muted ms-3">No pages available.</p>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted ms-3">No pages available.</p>
+                {% endif %}
             </div>
         </nav>
     </div>
     <!-- Sidebar End -->
-
 
     <!-- Content Start -->
     <div class="content">
@@ -78,27 +97,19 @@
             <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
                 <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
             </a>
-            {#                <a href="#" class="sidebar-toggler flex-shrink-0">#}
-            {#                    <i class="fa fa-bars"></i>#}
-            {#                </a>#}
-
             <div class="navbar-nav align-items-center ms-auto">
                 <div class="nav-item dropdown">
-
                     <a href="{% url 'message_list_ceo' %}" class="nav-link">
                         <i class="fa fa-envelope me-lg-2"></i>
                         <span class="d-none d-lg-inline-flex">Message</span>
                     </a>
-
-
                 </div>
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fa fa-bell me-lg-2"></i>
-                        <span class="d-none d-lg-inline-flex">Notificatin</span>
+                        <span class="d-none d-lg-inline-flex">Notification</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-
                         <hr class="dropdown-divider">
                         <a href="#" class="dropdown-item">
                             <h6 class="fw-normal mb-0">New user added</h6>
@@ -111,20 +122,14 @@
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                         <img class="rounded-circle me-lg-2" src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg" alt="" style="width: 40px; height: 40px;">
-                        {#                            <span class="d-none d-lg-inline-flex">{{user[7]}}</span>#}
                     </a>
                     <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-                        <!-- Settings and profile
-                        <a href="#" class="dropdown-item">My Profile</a>
-                        <a href="#" class="dropdown-item">Settings</a>
-                        -->
                         <a href="/logout" class="dropdown-item">Log Out</a>
                     </div>
                 </div>
             </div>
         </nav>
         <!-- Navbar End -->
-
 
         <!-- Sale & Revenue Start -->
         <div class="container-fluid pt-4 px-4">
@@ -168,38 +173,53 @@
             </div>
         </div>
 
+        <!-- Users Table Start -->
         <div class="container-fluid pt-4 px-4">
             <div class="bg-secondary text-center rounded p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h6 class="mb-0">Admins Dashbord</h6>
-{#                    <a href="{% url 'ceo' %}">Show All</a>#}
+                    <h6 class="mb-0">Admins Dashboard</h6>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">Add User</button>
                 </div>
+
                 <div class="table-responsive">
                     <table class="table text-start align-middle table-bordered table-hover mb-0">
                         <thead>
-                        <tr class="text-white">
-{#                            <th scope="col"><input class="form-check-input" type="checkbox"></th>#}
-                            <th scope="col">ID</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Surname</th>
-
-                            <th scope="col">Company code</th>
-                            <th scope="col">is_active</th>
-                            <td><a class="btn btn-sm btn"  style="background-color: blue;border-color: blue;color: white" href="{% url 'send_message_to_all' %}">Message to All</a></td>
-                        </tr>
+                            <tr class="text-white">
+                                <th>ID</th>
+                                <th>Email</th>
+                                <th>Name</th>
+                                <th>Surname</th>
+                                <th>Role</th>
+                                <th>Company Code</th>
+                                <th>Telegram ID</th>
+                                <th>Default Salary</th>
+                                <th>Page Permissions</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                                <th>Action</th>
+                                <th>
+                                    <a class="btn btn" style="background-color: blue; border-color: blue; color: white; width:130px; height: 40px;" href="{% url 'send_message_to_all' %}">To All</a>
+                                </th>
+                            </tr>
                         </thead>
                         <tbody>
-
-                        {% for user in users %}
+                            {% for user in users %}
                             <tr>
-{#                                <td><input class="form-check-input" type="checkbox"></td>#}
                                 <td>{{ user.id }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.name }}</td>
                                 <td>{{ user.surname }}</td>
-
+                                <td>{{ user.role }}</td>
                                 <td>{{ user.company_code }}</td>
+                                <td>{{ user.telegram_id|default:'N/A' }}</td>
+                            <td class="salary">{{ user.default_salary }} sum</td>
+                                <td>
+                                    {% for permission in user.permissions %}
+                                        {{ permission }}{% if not forloop.last %}, {% endif %}
+                                    {% empty %}
+                                        No permissions
+                                    {% endfor %}
+                                </td>
                                 <td>
                                     <button class="btn btn-sm btn-toggle-active {% if user.is_active %}btn-success{% else %}btn-danger{% endif %}"
                                             data-id="{{ user.id }}" data-active="{{ user.is_active }}">
@@ -210,171 +230,342 @@
                                         {% endif %}
                                     </button>
                                 </td>
-                                <td><a class="btn btn-sm btn-primary" href="{% url 'send_message' user.id %}">Send Message</a></td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.id }}">Edit</button>
+                                </td>
+                                <td>
+                                    <form method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="delete_user" value="true">
+                                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <a class="btn btn-sm btn-primary" href="{% url 'send_message' user.id %}">Send Message</a>
+                                </td>
                             </tr>
-                        {% endfor %}
+
+                            <!-- Edit User Modal -->
+                            <div class="modal fade" id="editUserModal{{ user.id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ user.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editUserModalLabel{{ user.id }}">Edit User: {{ user.email }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="user_id" value="{{ user.id }}">
+                                                <div class="mb-3">
+                                                    <label for="email_{{ user.id }}" class="form-label">Email</label>
+                                                    <input type="email" class="form-control" id="email_{{ user.id }}" name="email" value="{{ user.email }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="name_{{ user.id }}" class="form-label">Name</label>
+                                                    <input type="text" class="form-control" id="name_{{ user.id }}" name="name" value="{{ user.name }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="surname_{{ user.id }}" class="form-label">Surname</label>
+                                                    <input type="text" class="form-control" id="surname_{{ user.id }}" name="surname" value="{{ user.surname }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="role_{{ user.id }}" class="form-label">Role</label>
+                                                    <select class="form-select" id="role_{{ user.id }}" name="role" required>
+                                                        <option value="CEO" {% if user.role == 'CEO' %}selected{% endif %}>CEO</option>
+                                                        <option value="Financial Director" {% if user.role == 'Financial Director' %}selected{% endif %}>Financial Director</option>
+                                                        <option value="Member" {% if user.role == 'Member' %}selected{% endif %}>Member</option>
+                                                        <option value="Customer" {% if user.role == 'Customer' %}selected{% endif %}>Customer</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="company_code_{{ user.id }}" class="form-label">Company Code</label>
+                                                    <input type="text" class="form-control" id="company_code_{{ user.id }}" name="company_code" value="{{ user.company_code }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="telegram_id_{{ user.id }}" class="form-label">Telegram ID</label>
+                                                    <input type="text" class="form-control" id="telegram_id_{{ user.id }}" name="telegram_id" value="{{ user.telegram_id|default:'' }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="default_salary_{{ user.id }}" class="form-label">Default Salary</label>
+                                                    <input type="number" step="0.01" class="form-control" id="default_salary_{{ user.id }}" name="default_salary" value="{{ user.default_salary }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Page Permissions</label>
+                                                    <div>
+                                                        {% for page, label in form.fields.page_permissions.choices %}
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input" name="page_permissions" value="{{ page }}"
+                                                                   {% if label in user.permissions %}checked{% endif %}>
+                                                            <label class="form-check-label">{{ label }}</label>
+                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="is_active_{{ user.id }}" class="form-label">Active Status</label>
+                                                    <input type="checkbox" class="form-check-input" id="is_active_{{ user.id }}" name="is_active" {% if user.is_active %}checked{% endif %}>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="password_{{ user.id }}" class="form-label">Password (leave blank to keep current)</label>
+                                                    <input type="password" class="form-control" id="password_{{ user.id }}" name="password">
+                                                </div>
+                                                <button type="submit" class="btn btn-warning">Save Changes</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        <!-- Recent Sales End -->
-
-
-
-        <!-- Footer End -->
+        <!-- Add User Modal -->
+        <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="email_new" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email_new" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="name_new" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name_new" name="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="surname_new" class="form-label">Surname</label>
+                                <input type="text" class="form-control" id="surname_new" name="surname" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="role_new" class="form-label">Role</label>
+                                <select class="form-select" id="role_new" name="role" required>
+                                    <option value="CEO">CEO</option>
+                                    <option value="Financial Director">Financial Director</option>
+                                    <option value="Member">Member</option>
+                                    <option value="Customer">Customer</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="company_code_new" class="form-label">Company Code</label>
+                                <input type="text" class="form-control" id="company_code_new" name="company_code" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="telegram_id_new" class="form-label">Telegram ID</label>
+                                <input type="text" class="form-control" id="telegram_id_new" name="telegram_id">
+                            </div>
+                            <div class="mb-3">
+                                <label for="default_salary_new" class="form-label">Default Salary</label>
+                                <input type="number" step="0.01" class="form-control" id="default_salary_new" name="default_salary" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Page Permissions</label>
+                                <div>
+                                    {% for page, label in form.fields.page_permissions.choices %}
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" name="page_permissions" value="{{ page }}">
+                                        <label class="form-check-label">{{ label }}</label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="is_active_new" class="form-label">Active Status</label>
+                                <input type="checkbox" class="form-check-input" id="is_active_new" name="is_active" checked>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password_new" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password_new" name="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add User</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
-    <!-- Content End -->
 
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'lib/chart/chart.min.js' %}"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus/js/moment.min.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-</div>
+    <!-- Template Javascript -->
+    <script src="{% static 'js/main.js' %}"></script>
 
-<!-- JavaScript Libraries -->
-<!-- JavaScript Libraries -->
-<!-- Import jQuery for easier AJAX handling -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleButtons = document.querySelectorAll('.btn-toggle-active');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', async () => {
+                    const userId = button.getAttribute('data-id');
+                    const isActive = button.getAttribute('data-active') === 'true';
+                    try {
+                        const response = await fetch('{% url "toggle_user_active" %}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            },
+                            body: new URLSearchParams({ 'user_id': userId })
+                        });
+                        if (response.ok) {
+                            const data = await response.json();
+                            button.textContent = data.is_active ? 'Active' : 'Inactive';
+                            button.classList.toggle('btn-success', data.is_active);
+                            button.classList.toggle('btn-danger', !data.is_active);
+                            document.getElementById('active-user-count').textContent = data.active_user_count;
+                            document.getElementById('inactive-user-count').textContent = data.inactive_user_count;
+                            button.setAttribute('data-active', data.is_active);
+                        } else {
+                            console.error('Error:', response.statusText);
+                        }
+                    } catch (error) {
+                        console.error('Fetch error:', error);
+                    }
+                });
+            });
 
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{% static 'lib/chart/chart.min.js' %}"></script>
-<script src="{% static 'lib/easing/easing.min.js' %}"></script>
-<script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
-<script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-<script src="{% static 'lib/tempusdominus/js/moment.min.js' %}"></script>
-<script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js' %}"></script>
-<script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+            // Send Message button click handler
+            document.querySelectorAll('.send-message').forEach(button => {
+                button.addEventListener('click', () => {
+                    const userId = button.getAttribute('data-user-id');
+                    // Add your logic for sending message to a specific user
+                    alert(`Sending message to user ID: ${userId}`);
+                    // Replace with actual message sending logic (e.g., open a modal or redirect)
+                });
+            });
 
-<!-- Template Javascript -->
-{#    <script src="{% static 'js/main.js' %}"></script>#}
+            // Message to All button click handler
+            document.getElementById('message-to-all').addEventListener('click', () => {
+                // Add your logic for sending message to all users
+                alert('Sending message to all users');
+                // Replace with actual message sending logic (e.g., open a modal or redirect)
+            });
+        });
+    </script>
 
+    <script>
+        $(document).on('click', '.delete-user', function() {
+            var userId = $(this).data('id');
+            var csrfToken = '{{ csrf_token }}';
+            if (confirm('Are you sure you want to delete this user?')) {
+                $.ajax({
+                    url: "{% url 'index' %}",
+                    type: 'POST',
+                    data: {
+                        'delete_user': true,
+                        'id': userId,
+                        'csrfmiddlewaretoken': csrfToken
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            $('#user-row-' + userId).remove();
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error occurred: ' + error);
+                    }
+                });
+            }
+        });
+    </script>
 
+    <script>
+        $(document).on('click', '.delete-exhibition', function() {
+            var exhibitionId = $(this).data('id');
+            var csrfToken = '{{ csrf_token }}';
+            if (confirm('Are you sure you want to delete this exhibition?')) {
+                $.ajax({
+                    url: "{% url 'index' %}",
+                    type: 'POST',
+                    data: {
+                        'delete_exhibition': true,
+                        'id': exhibitionId,
+                        'csrfmiddlewaretoken': csrfToken
+                    },
+                    success: function(response) {
+                        $('#exhibition-row-' + exhibitionId).remove();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error occurred: ' + error);
+                    }
+                });
+            }
+        });
+    </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calender');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+            });
+            calendar.render();
+        });
+    </script>
 
-<script>
+    <script>
+        document.querySelectorAll('.btn-toggle-active').forEach(button => {
+            button.addEventListener('click', function() {
+                const userId = this.getAttribute('data-id');
+                const isActive = this.getAttribute('data-active') === 'True';
+
+                fetch("{% url 'toggle_user_active' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ user_id: userId, is_active: !isActive })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        this.setAttribute('data-active', !isActive);
+                        this.textContent = !isActive ? 'Active' : 'Inactive';
+                        this.classList.toggle('btn-success', !isActive);
+                        this.classList.toggle('btn-danger', isActive);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const toggleButtons = document.querySelectorAll('.btn-toggle-active');
-
-        toggleButtons.forEach(button => {
-            button.addEventListener('click', async () => {
-                const userId = button.getAttribute('data-id');
-                const isActive = button.getAttribute('data-active') === 'true';
-
-                try {
-                    const response = await fetch('{% url "toggle_user_active" %}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'X-CSRFToken': '{{ csrf_token }}'
-                        },
-                        body: new URLSearchParams({ 'user_id': userId })
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-
-                        // Update button status
-                        button.textContent = data.is_active ? 'Active' : 'Inactive';
-                        button.classList.toggle('btn-success', data.is_active);
-                        button.classList.toggle('btn-danger', !data.is_active);
-
-                        // Update user counts
-                        document.getElementById('active-user-count').textContent = data.active_user_count;
-                        document.getElementById('inactive-user-count').textContent = data.inactive_user_count;
-
-                        // Update the button's data-active attribute
-                        button.setAttribute('data-active', data.is_active);
-                    } else {
-                        console.error('Error:', response.statusText);
-                    }
-                } catch (error) {
-                    console.error('Fetch error:', error);
-                }
-            });
+        // Salary ustunidagi barcha qiymatlarni formatlash
+        document.querySelectorAll('td.salary').forEach(cell => {
+            let value = parseFloat(cell.textContent.replace(' sum', '')); // "sum"ni olib tashlash
+            cell.textContent = value.toLocaleString('en-US') + ' sum'; // Minglik ajratgich qo'shish
         });
     });
-
-</script>
-
-<script>
-    $(document).on('click', '.delete-user', function() {
-        var userId = $(this).data('id');
-        var csrfToken = '{{ csrf_token }}';
-
-        if (confirm('Are you sure you want to delete this user?')) {
-            $.ajax({
-                url: "{% url 'index' %}",
-                type: 'POST',
-                data: {
-                    'delete_user': true,
-                    'id': userId,
-                    'csrfmiddlewaretoken': csrfToken
-                },
-                success: function(response) {
-                    if (response.status === 'success') {
-
-                        $('#user-row-' + userId).remove();
-                    } else {
-                        alert('Error: ' + response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    alert('Error occurred: ' + error);
-                }
-            });
-        }
-    });
-
-
 </script>
 
 
-<script>
-    $(document).on('click', '.delete-exhibition', function() {
-        var exhibitionId = $(this).data('id');
-        var csrfToken = '{{ csrf_token }}';
-
-        if (confirm('Are you sure you want to delete this exhibition?')) {
-            $.ajax({
-                url: "{% url 'index' %}",
-                type: 'POST',
-                data: {
-                    'delete_exhibition': true,
-                    'id': exhibitionId,
-                    'csrfmiddlewaretoken': csrfToken
-                },
-                success: function(response) {
-
-                    $('#exhibition-row-' + exhibitionId).remove();
-                },
-                error: function(xhr, status, error) {
-                    alert('Error occurred: ' + error);
-                }
-            });
-        }
-    });
-</script>
-
-
-
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var calendarEl = document.getElementById('calender');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            },
-
-        });
-        calendar.render();
-    });
-</script>
 </body>
-
 </html>

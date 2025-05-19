@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-hr97o=79_3pargo@n7d5t2tv@0qj@f#au516$1^wrhl!mnk6u&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -35,7 +35,8 @@ INSTALLED_APPS = [
     'telegram',
     'consulting',
     'ceo',
-    'service'
+    'service',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -75,16 +76,22 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-
+# 'default': {
+#     'ENGINE': 'django.db.backends.sqlite3',
+#     'NAME': BASE_DIR / "db.sqlite3",
+# }
 
 DATABASES = {
+
+
+
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cims$default',
-        'USER': 'cims',
-        'PASSWORD': '5498603Ma.',
-        'HOST': 'cims.mysql.pythonanywhere-services.com',
-        'PORT': '3306',
+        # 'ENGINE': 'django.db.backends.mysql',
+        # 'NAME': 'cims$default',
+        # 'USER': 'cims',
+        # 'PASSWORD': '5498603Ma.',
+        # 'HOST': 'cims.mysql.pythonanywhere-services.com',
+        # 'PORT': '3306',
     },
     'logistic': {
         'ENGINE': 'django.db.backends.mysql',

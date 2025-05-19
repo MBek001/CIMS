@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from  django.conf.urls.static import static
-from passlib.handlers.django import django_disabled
+
 
 from django.conf import settings
 

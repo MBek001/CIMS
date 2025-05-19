@@ -44,16 +44,14 @@
 
 
     <!-- Sidebar Start -->
-    <div class="sidebar pe-4 pb-3">
+   <div class="sidebar pe-4 pb-3">
         <nav class="navbar bg-secondary navbar-dark">
             <a href="http://cognilabs.org/" class="navbar-brand mx-4 mb-3" target="_blank">
                 <h3 class="text-primary">Cognilabs</h3>
             </a>
             <div class="d-flex align-items-center ms-4 mb-4">
                 <div class="position-relative">
-                    <img class="rounded-circle"
-                         src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg"
-                         alt="" style="width: 40px; height: 40px;">
+                    <img class="rounded-circle" src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg" alt="" style="width: 40px; height: 40px;">
                     <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                 </div>
                 <div class="ms-3">
@@ -62,17 +60,39 @@
                 </div>
             </div>
             <div class="navbar-nav w-100">
-                <a href="{% url 'ceo' %}" class="nav-item nav-link"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
-                <a href="{% url  'payment_list' %}" class="nav-item nav-link "><i class="fa fa-credit-card me-2"></i>Payment</a>
-                <a href="{% url 'project_toggle' %}" class="nav-item nav-link active"><i class="fab fa-wordpress me-2"></i>WordPress</a>
-                <a href="{% url  'crm' %}" class="nav-item nav-link"><i class="fa fa-users me-2"></i>Sales CRM</a>
-                <a href="{% url  'finance_list' %}" class="nav-item nav-link "><i class="fa fa-money-bill-wave me-2"></i>Finance</a>
+                {% if user.company_code == 'oddiy' or user.company_code == 'ceo' %}
+                    {% for permission in user.page_permissions.all %}
+                        {% if permission.page_name == 'ceo' %}
+                            <a href="{% url 'user_dashboard' company_code=user.company_code %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'user_dashboard' %}active{% endif %}">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        {% elif permission.page_name == 'payment_list' %}
+                            <a href="{% url 'payment_list' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'payment_list' %}active{% endif %}">
+                                <i class="fa fa-credit-card me-2"></i>Payment
+                            </a>
+                        {% elif permission.page_name == 'project_toggle' %}
+                            <a href="{% url 'project_toggle' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'project_toggle' %}active{% endif %}">
+                                <i class="fab fa-wordpress me-2"></i>Wordpress
+                            </a>
+                        {% elif permission.page_name == 'crm' %}
+                            <a href="{% url 'crm' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'crm' %}active{% endif %}">
+                                <i class="fa fa-users me-2"></i>Sales CRM
+                            </a>
+                        {% elif permission.page_name == 'finance_list' %}
+                            <a href="{% url 'finance_list' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'finance_list' %}active{% endif %}">
+                                <i class="fa fa-money-bill-wave me-2"></i>Finance
+                            </a>
+                        {% endif %}
+                    {% empty %}
+                        <p class="text-muted ms-3">No pages available.</p>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted ms-3">No pages available.</p>
+                {% endif %}
             </div>
         </nav>
     </div>
     <!-- Sidebar End -->
-
-
     <!-- Content Start -->
     <div class="content">
         <!-- Navbar Start -->
@@ -166,7 +186,7 @@
                                     <form method="post">
                                         {% csrf_token %}
                                         <button type="submit" name="toggle_site" value="toggle"
-                                                class="btn {% if site_status %}btn-success{% else %}btn-danger{% endif %} py-3 px-5">
+                                                class="btn {% if site_status %}btn-success{% else %}btn-danger{% endif %} py-2 px-3">
                                             {% if site_status %}
                                                 ✅ Website is ON (Click to turn OFF)
                                             {% else %}

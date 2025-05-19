@@ -5,16 +5,16 @@ from main.models import  User
 from  ceo.forms import MessageFormAll,MessageForm
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from .forms import MessageForm
-from main.models import Message
-from django.http import JsonResponse
+from ceo.forms import MessageForm, UserForm
+from main.models import Message, UserPagePermission
 from django.views.decorators.http import require_POST
+from datetime import datetime
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from main.models import Payment, UserPagePermission
 
-
-
-
+from django.contrib import messages
 
 def company_code_check(company_code_value):
     def decorator(view_func):
@@ -48,26 +48,69 @@ def toggle_user_active(request):
 
 
 
-
-
 @login_required
 @company_code_check("ceo")
 def ceo(request):
+    # Fetch all users
     users = User.objects.all()
     user_count = users.count()
-    messages = Message.objects.all()
-    messages_count = messages.count()
+    messages_count = Message.objects.count()
     active_user_count = User.objects.filter(is_active=True).count()
     inactive_user_count = User.objects.filter(is_active=False).count()
+
+    # Prepare user permissions
+    user_permissions = {}
+    for user in users:
+        permissions = UserPagePermission.objects.filter(user=user).values_list('page_name', flat=True)
+        modified_permissions = [
+            'Dashboard' if perm == 'ceo' else
+            'Payment' if perm == 'payment_list' else
+            'Wordpress' if perm == 'project_toggle' else
+            'Sales CRM' if perm == 'crm' else
+            'Finance' if perm == 'finance_list' else
+            perm for perm in permissions
+        ]
+        user_permissions[user.id] = modified_permissions
+
+    # Add permissions to each user object for easier access in template
+    for user in users:
+        user.permissions = user_permissions.get(user.id, [])
+
+    # Handle adding, editing, or deleting a user
+    if request.method == "POST":
+        if 'delete_user' in request.POST:  # Delete user logic
+            user_id = request.POST.get("user_id")
+            user = get_object_or_404(User, id=user_id)
+            user.delete()
+            messages.success(request, f"Foydalanuvchi {user.email} muvaffaqiyatli o‘chirildi.")
+            return redirect('ceo')
+
+        user_id = request.POST.get("user_id")
+        if user_id:
+            # Edit existing user
+            user = get_object_or_404(User, id=user_id)
+            form = UserForm(request.POST, instance=user)
+        else:
+            # Add new user
+            form = UserForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Foydalanuvchi muvaffaqiyatli saqlandi.")
+            return redirect('ceo')
+        else:
+            messages.error(request, "Forma xatolik bilan to'ldirildi. Qayta urining.")
+    else:
+        form = UserForm()
 
     return render(request, 'ceo.html', {
         'users': users,
         'user_count': user_count,
         'messages_count': messages_count,
         'active_user_count': active_user_count,
-        'inactive_user_count': inactive_user_count
+        'inactive_user_count': inactive_user_count,
+        'form': form
     })
-
 
 @login_required
 @company_code_check("ceo")
@@ -191,18 +234,7 @@ def user_dashboard(request, company_code):
 
 
 
-
-
-
-
-
-
-from django.shortcuts import render
-from main.models import Payment
-
-
-from django.http import JsonResponse
-
+@login_required
 def payments_view(request):
     if request.method == "POST":
         # Add Payment
@@ -211,14 +243,45 @@ def payments_view(request):
             date = request.POST.get('date')
             summ = request.POST.get('summ')
             if project_name and date and summ:
-                payment = Payment.objects.create(
+                Payment.objects.create(
                     project=project_name,
                     date=date,
                     summ=summ,
                 )
+                return redirect('payment_list')
+
+        # Edit Payment
+        if 'edit_payment' in request.POST:
+            payment_id = request.POST.get('id')
+            project_name = request.POST.get('project_name')
+            date_str = request.POST.get('date')
+            summ = request.POST.get('summ')
+            payment_status = request.POST.get('payment') == 'True'
 
 
-                return  redirect('payment_list')
+            if payment_id and payment_id.isdigit() and project_name and date_str and summ:
+                payment = Payment.objects.filter(id=payment_id).first()
+                if payment:
+                    try:
+                        payment.project = project_name
+                        payment.date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                        payment.summ = summ
+                        payment.payment = payment_status
+                        payment.save()
+                        return JsonResponse({
+                            'status': 'success',
+                            'payment': {
+                                'id': payment.id,
+                                'project': payment.project,
+                                'date': payment.date.strftime('%Y-%m-%d'),
+                                'summ': float(payment.summ),
+                                'payment_status': payment.payment
+                            }
+                        })
+                    except Exception as e:
+                        return JsonResponse({'status': 'error', 'message': str(e)})
+                return JsonResponse({'status': 'error', 'message': 'Payment not found.'})
+            return JsonResponse({'status': 'error', 'message': 'Missing required fields.'})
 
         # Delete Payment
         if 'delete_payment' in request.POST:
@@ -241,7 +304,7 @@ def payments_view(request):
                         'payment': {
                             'id': payment.id,
                             'project': payment.project,
-                            'date': payment.date,
+                            'date': payment.date.strftime('%Y-%m-%d'),
                             'summ': payment.summ,
                             'payment': payment.payment
                         }
@@ -250,8 +313,25 @@ def payments_view(request):
 
     # Get Payments
     payments = Payment.objects.all()
-    return render(request, 'ceo_payment.html', {'payments': payments})
 
+    # Fetch and sort user permissions
+    user = request.user
+    permissions = UserPagePermission.objects.filter(user=user).values_list('page_name', flat=True)
+    page_order = ['ceo', 'payment_list', 'project-toggle', 'crm', 'finance_list']
+    modified_permissions = []
+    for page in page_order:
+        if page in permissions:
+            modified_permissions.append(
+                'Dashboard' if page == 'ceo' else
+                'Payment' if page == 'payment_list' else
+                'Wordpress' if page == 'project_toggle' else
+                'Sales CRM' if page == 'crm' else
+                'Finance' if page == 'finance_list' else
+                page
+            )
 
-
+    return render(request, 'ceo_payment.html', {
+        'payments': payments,
+        'permissions': modified_permissions
+    })
 
