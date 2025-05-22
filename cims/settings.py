@@ -18,7 +18,7 @@ DEBUG = False
 ALLOWED_HOSTS = ["*"]
 
 
-# Application definition
+COGNILABS_API_SECRET = "cognilabs_crm_system_api"
 
 INSTALLED_APPS = [
     'django.contrib.admin',

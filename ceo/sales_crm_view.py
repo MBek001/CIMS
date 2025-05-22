@@ -2,6 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+
+from cims import settings
 from main.models import  UserPagePermission
 
 from . import models
@@ -96,14 +98,19 @@ def delete_customer(request, pk):
     return redirect(f"{reverse('crm')}#customer-deleted")
 
 
-
-
-
 class CustomerCreateAPIView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
     def post(self, request):
+        token = request.headers.get('X-API-TOKEN')
+
+        if token != settings.COGNILABS_API_SECRET:
+            return Response({"detail": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
+
         serializer = CustomerSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
