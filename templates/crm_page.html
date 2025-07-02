@@ -28,6 +28,114 @@
             color: #ffffff;
         }
     </style>
+    <style>
+        .stats-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .opacity-10 {
+            opacity: 0.1;
+        }
+
+        .opacity-75 {
+            opacity: 0.75;
+        }
+
+        .text-white-50 {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+
+        .text-dark-50 {
+            color: rgba(0, 0, 0, 0.5) !important;
+        }
+
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .spin-slow {
+            animation: spin 3s linear infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Enhanced progress bars */
+        .progress {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .stats-card .card-body {
+                padding: 1.5rem 1rem !important;
+            }
+
+            .stats-card h3 {
+                font-size: 1.5rem !important;
+            }
+
+            .position-absolute {
+                display: none; /* Hide background icons on mobile for cleaner look */
+            }
+        }
+
+        /* Additional modern touches */
+        .card {
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .stats-card:hover::before {
+            transform: translateX(100%);
+        }
+    </style>
 
     <style>
         .form-control,
@@ -91,35 +199,41 @@
             color: white;
         }
 
+        .status-need_to_call {
+            background-color: #ff6b35;
+            color: white;
+        }
+
         .status-rejected {
             background-color: red;
             color: white;
         }
-         select.form-select {
-    background-color: white !important;
-    color: black !important;
-  }
 
-  select.form-select option {
-    background-color: white !important;
-    color: black !important;
-  }
+        select.form-select {
+            background-color: white !important;
+            color: black !important;
+        }
+
+        select.form-select option {
+            background-color: white !important;
+            color: black !important;
+        }
     </style>
-
-
 </head>
 
 <body>
 <div class="container-fluid position-relative d-flex p-0">
     <!-- Sidebar Start -->
-   <div class="sidebar pe-4 pb-3">
+    <div class="sidebar pe-4 pb-3">
         <nav class="navbar bg-secondary navbar-dark">
             <a href="http://cognilabs.org/" class="navbar-brand mx-4 mb-3" target="_blank">
                 <h3 class="text-primary">Cognilabs</h3>
             </a>
             <div class="d-flex align-items-center ms-4 mb-4">
                 <div class="position-relative">
-                    <img class="rounded-circle" src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg" alt="" style="width: 40px; height: 40px;">
+                    <img class="rounded-circle"
+                         src="https://static.vecteezy.com/system/resources/thumbnails/005/545/335/small/user-sign-icon-person-symbol-human-avatar-isolated-on-white-backogrund-vector.jpg"
+                         alt="" style="width: 40px; height: 40px;">
                     <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                 </div>
                 <div class="ms-3">
@@ -131,23 +245,28 @@
                 {% if user.company_code == 'oddiy' or user.company_code == 'ceo' %}
                     {% for permission in user.page_permissions.all %}
                         {% if permission.page_name == 'ceo' %}
-                            <a href="{% url 'user_dashboard' company_code=user.company_code %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'user_dashboard' %}active{% endif %}">
+                            <a href="{% url 'user_dashboard' company_code=user.company_code %}"
+                               class="nav-item nav-link {% if request.resolver_match.url_name == 'user_dashboard' %}active{% endif %}">
                                 <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                             </a>
                         {% elif permission.page_name == 'payment_list' %}
-                            <a href="{% url 'payment_list' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'payment_list' %}active{% endif %}">
+                            <a href="{% url 'payment_list' %}"
+                               class="nav-item nav-link {% if request.resolver_match.url_name == 'payment_list' %}active{% endif %}">
                                 <i class="fa fa-credit-card me-2"></i>Payment
                             </a>
                         {% elif permission.page_name == 'project_toggle' %}
-                            <a href="{% url 'project_toggle' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'project_toggle' %}active{% endif %}">
+                            <a href="{% url 'project_toggle' %}"
+                               class="nav-item nav-link {% if request.resolver_match.url_name == 'project_toggle' %}active{% endif %}">
                                 <i class="fab fa-wordpress me-2"></i>Wordpress
                             </a>
                         {% elif permission.page_name == 'crm' %}
-                            <a href="{% url 'crm' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'crm' %}active{% endif %}">
+                            <a href="{% url 'crm' %}"
+                               class="nav-item nav-link {% if request.resolver_match.url_name == 'crm' %}active{% endif %}">
                                 <i class="fa fa-users me-2"></i>Sales CRM
                             </a>
                         {% elif permission.page_name == 'finance_list' %}
-                            <a href="{% url 'finance_list' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'finance_list' %}active{% endif %}">
+                            <a href="{% url 'finance_list' %}"
+                               class="nav-item nav-link {% if request.resolver_match.url_name == 'finance_list' %}active{% endif %}">
                                 <i class="fa fa-money-bill-wave me-2"></i>Finance
                             </a>
                         {% endif %}
@@ -167,6 +286,207 @@
         <div class="container-fluid">
             <div class="bg-secondary rounded p-4">
                 <h3 class="text-center mb-4">CRM Management</h3>
+
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <!-- Main Stats Card with Gradient Background -->
+                        <div class="card shadow-lg border-0"
+                             style="background: linear-gradient(135deg, #ffffff 0%, #5c5973 100%);">
+                            <div class="card-body p-4">
+                                <!-- Header with Icon -->
+                                <div class="d-flex align-items-center justify-content-center mb-4">
+                                    <div class="me-3">
+                                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center"
+                                             style="width: 50px; height: 50px;">
+                                            <i class="fas fa-chart-pie text-white fa-lg"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-dark-100 mb-0 fw-bold">Customer Pipeline Overview</h4>
+                                        <small class="text-light opacity-75">Real-time statistics and insights</small>
+                                    </div>
+                                </div>
+
+                                <!-- Statistics Grid -->
+                                <div class="row g-3">
+                                    <!-- Total Customers - Highlighted -->
+                                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                        <div class="card bg-primary border-0 h-100 shadow-sm stats-card">
+                                            <div class="card-body text-center p-3 position-relative overflow-hidden">
+                                                <!-- Background Icon -->
+                                                <i class="fas fa-users position-absolute opacity-10"
+                                                   style="font-size: 4rem; top: -10px; right: -10px;"></i>
+                                                <!-- Content -->
+                                                <div class="position-relative">
+                                                    <i class="fas fa-users mb-2 text-dark-50"></i>
+                                                    <h3 class="text-dark fw-bold mb-1">{{ status_stats.total_customers|default:0 }}</h3>
+                                                    <small class="text-dark-50 fw-medium">Total Customers</small>
+                                                    <!-- Progress Bar -->
+                                                    <div class="progress mt-2" style="height: 3px;">
+                                                        <div class="progress-bar bg-white" role="progressbar"
+                                                             style="width: 100%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Need to Call - Urgent Status -->
+                                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                        <div class="card border-0 h-100 shadow-sm stats-card"
+                                             style="background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);">
+                                            <div class="card-body text-center p-3 position-relative overflow-hidden">
+                                                <i class="fas fa-phone-alt position-absolute opacity-10"
+                                                   style="font-size: 4rem; top: -10px; right: -10px;"></i>
+                                                <div class="position-relative">
+                                                    <i class="fas fa-phone-alt mb-2 text-white-50 animate-pulse"></i>
+                                                    <h3 class="text-white fw-bold mb-1">{{ status_stats.need_to_call|default:0 }}</h3>
+                                                    <small class="text-white-50 fw-medium">Need to Call</small>
+                                                    <div class="progress mt-2" style="height: 3px;">
+                                                        <div class="progress-bar bg-white" role="progressbar"
+                                                             style="width:
+                                                                     {% if status_stats.total_customers > 0 %}{{ status_stats.need_to_call|default:0|floatformat:0 }}{% widthratio status_stats.need_to_call status_stats.total_customers 100 %}{% else %}0{% endif %}%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Contacted -->
+                                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                        <div class="card border-0 h-100 shadow-sm stats-card"
+                                             style="background: linear-gradient(135deg, #6c757d 0%, #495057 100%);">
+                                            <div class="card-body text-center p-3 position-relative overflow-hidden">
+                                                <i class="fas fa-phone position-absolute opacity-10"
+                                                   style="font-size: 4rem; top: -10px; right: -10px;"></i>
+                                                <div class="position-relative">
+                                                    <i class="fas fa-phone mb-2 text-white-50"></i>
+                                                    <h3 class="text-white fw-bold mb-1">{{ status_stats.contacted|default:0 }}</h3>
+                                                    <small class="text-white-50 fw-medium">Contacted</small>
+                                                    <div class="progress mt-2" style="height: 3px;">
+                                                        <div class="progress-bar bg-white" role="progressbar"
+                                                             style="width:
+                                                                     {% if status_stats.total_customers > 0 %}{% widthratio status_stats.contacted status_stats.total_customers 100 %}{% else %}0{% endif %}%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Project Started -->
+                                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                        <div class="card border-0 h-100 shadow-sm stats-card"
+                                             style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                                            <div class="card-body text-center p-3 position-relative overflow-hidden">
+                                                <i class="fas fa-play-circle position-absolute opacity-10"
+                                                   style="font-size: 4rem; top: -10px; right: -10px;"></i>
+                                                <div class="position-relative">
+                                                    <i class="fas fa-play-circle mb-2 text-white-50"></i>
+                                                    <h3 class="text-white fw-bold mb-1">{{ status_stats.project_started|default:0 }}</h3>
+                                                    <small class="text-white-50 fw-medium">Projects Started</small>
+                                                    <div class="progress mt-2" style="height: 3px;">
+                                                        <div class="progress-bar bg-white" role="progressbar"
+                                                             style="width:
+                                                                     {% if status_stats.total_customers > 0 %}{% widthratio status_stats.project_started status_stats.total_customers 100 %}{% else %}0{% endif %}%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Continuing -->
+                                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                        <div class="card border-0 h-100 shadow-sm stats-card"
+                                             style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);">
+                                            <div class="card-body text-center p-3 position-relative overflow-hidden">
+                                                <i class="fas fa-sync-alt position-absolute opacity-10"
+                                                   style="font-size: 4rem; top: -10px; right: -10px;"></i>
+                                                <div class="position-relative">
+                                                    <i class="fas fa-sync-alt mb-2 text-dark-50 spin-slow"></i>
+                                                    <h3 class="text-dark fw-bold mb-1">{{ status_stats.continuing|default:0 }}</h3>
+                                                    <small class="text-dark-50 fw-medium">In Progress</small>
+                                                    <div class="progress mt-2" style="height: 3px;">
+                                                        <div class="progress-bar bg-dark" role="progressbar"
+                                                             style="width:
+                                                                     {% if status_stats.total_customers > 0 %}{% widthratio status_stats.continuing status_stats.total_customers 100 %}{% else %}0{% endif %}%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Finished -->
+                                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                        <div class="card border-0 h-100 shadow-sm stats-card"
+                                             style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);">
+                                            <div class="card-body text-center p-3 position-relative overflow-hidden">
+                                                <i class="fas fa-check-circle position-absolute opacity-10"
+                                                   style="font-size: 4rem; top: -10px; right: -10px;"></i>
+                                                <div class="position-relative">
+                                                    <i class="fas fa-check-circle mb-2 text-white-50"></i>
+                                                    <h3 class="text-white fw-bold mb-1">{{ status_stats.finished|default:0 }}</h3>
+                                                    <small class="text-white-50 fw-medium">Completed</small>
+                                                    <div class="progress mt-2" style="height: 3px;">
+                                                        <div class="progress-bar bg-white" role="progressbar"
+                                                             style="width:
+                                                                     {% if status_stats.total_customers > 0 %}{% widthratio status_stats.finished status_stats.total_customers 100 %}{% else %}0{% endif %}%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Rejected -->
+                                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                                        <div class="card border-0 h-100 shadow-sm stats-card"
+                                             style="background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%);">
+                                            <div class="card-body text-center p-3 position-relative overflow-hidden">
+                                                <i class="fas fa-times-circle position-absolute opacity-10"
+                                                   style="font-size: 4rem; top: -10px; right: -10px;"></i>
+                                                <div class="position-relative">
+                                                    <i class="fas fa-times-circle mb-2 text-white-50"></i>
+                                                    <h3 class="text-white fw-bold mb-1">{{ status_stats.rejected|default:0 }}</h3>
+                                                    <small class="text-white-50 fw-medium">Rejected</small>
+                                                    <div class="progress mt-2" style="height: 3px;">
+                                                        <div class="progress-bar bg-white" role="progressbar"
+                                                             style="width:
+                                                                     {% if status_stats.total_customers > 0 %}{% widthratio status_stats.rejected status_stats.total_customers 100 %}{% else %}0{% endif %}%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Summary Row -->
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <div class="d-flex justify-content-between align-items-center p-3 rounded"
+                                             style="background: rgba(255,255,255,0.1);">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-info-circle text-info me-2"></i>
+                                                <span class="text-light fw-medium">Pipeline Health Score:</span>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                {% if status_stats.total_customers > 0 %}
+                                                    {% widthratio status_stats.finished|add:status_stats.continuing|add:status_stats.project_started status_stats.total_customers 100 as health_score %}
+                                                    <div class="progress me-3" style="width: 100px; height: 8px;">
+                                                        <div class="progress-bar bg-success" role="progressbar"
+                                                             style="width: {{ health_score }}%"></div>
+                                                    </div>
+                                                    <span class="text-white fw-bold">{{ health_score }}%</span>
+                                                {% else %}
+                                                    <span class="text-white-50">No data</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <!-- Customer Add Form -->
                 <form method="POST" action="{% url 'crm' %}" class="mb-5">
@@ -228,7 +548,6 @@
                     </div>
                 </form>
 
-
                 <!-- Search -->
                 <form method="GET" class="mb-4 d-flex gap-2">
                     <input type="text" name="search" value="{{ request.GET.search }}" class="form-control"
@@ -239,137 +558,135 @@
                     {% endif %}
                 </form>
 
-
-<!-- Customer Table -->
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 id="customer-section">Recent Customers</h4>
-    <form method="GET" class="d-flex align-items-center gap-2">
-        <select name="status" class="form-select" onchange="this.form.submit()" style="width: 200px;">
-            <option value="">All Statuses</option>
-            {% for key, value in status_choices %}
-                <option value="{{ key }}" {% if selected_status == key %}selected{% endif %}>{{ value }}</option>
-            {% endfor %}
-        </select>
-        {% if request.GET.search %}
-            <input type="hidden" name="search" value="{{ request.GET.search }}">
-        {% endif %}
-    </form>
-</div>
-<div class="table-responsive">
-    <table class="table table-striped table-bordered">
-        <thead>
-        <tr>
-            <th>Full Name</th>
-            <th>Platform</th>
-            <th>Username</th>
-            <th>Phone</th>
-            <th>Status</th>
-            <th>Assistant</th>
-            <th>Notes</th>
-            <th>Created</th>
-            <th>Edit</th>
-            <th>Delete</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for customer in customers %}
-            {% if edit_id == customer.id %}
-                <tr id="customer-{{ customer.id }}">
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="edit_id" value="{{ customer.id }}">
-                        <td>
-                            <input type="text" name="full_name" value="{{ customer.full_name }}"
-                                   class="form-control white-input" placeholder="Full Name"
-                                   id="floatingFullName">
-                        </td>
-                        <td>
-                            <input type="text" name="platform" value="{{ customer.platform }}"
-                                   class="form-control" placeholder="Platform" id="floatingPlatform">
-                        </td>
-                        <td>
-                            <input type="text" name="username" value="{{ customer.username }}"
-                                   class="form-control" placeholder="Username" id="floatingUsername">
-                        </td>
-                        <td>
-                            <input type="text" name="phone_number" value="{{ customer.phone_number }}"
-                                   class="form-control" placeholder="Phone Number"
-                                   id="floatingPhoneNumber">
-                        </td>
-                        <td>
-                            <select name="status" class="form-select" id="floatingStatus">
-                                {% for key, val in customer.STATUS_CHOICES %}
-                                    <option value="{{ key }}"
-                                            {% if customer.status == key %}selected{% endif %}>{{ val }}</option>
-                                {% endfor %}
-                            </select>
-                        </td>
-                        <td>
-                            <input type="text" name="assistant_name"
-                                   value="{{ customer.assistant_name }}"
-                                   class="form-control" placeholder="Assistant Name"
-                                   id="floatingAssistant">
-                        </td>
-                        <td>
-                            <textarea name="notes" class="form-control" placeholder="Notes..." id="floatingNotes"
-                                      style="height: 100px;">{{ customer.notes }}</textarea>
-                        </td>
-                        <td>{{ customer.created_at|date:"Y-m-d H:i" }}</td>
-                        <td>
-                            <button type="submit" name="save_edit" class="btn btn-success btn-sm">
-                                <i class="fas fa-save"></i>
-                            </button>
-                        </td>
-                        <td>
-                            <a href="{% url 'delete_customer' customer.id %}"
-                               class="btn btn-danger btn-sm"
-                               onclick="return confirm('Are you sure?')">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </td>
+                <!-- Customer Table -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 id="customer-section">Recent Customers</h4>
+                    <form method="GET" class="d-flex align-items-center gap-2">
+                        <select name="status" class="form-select" onchange="this.form.submit()" style="width: 200px;">
+                            <option value="">All Statuses</option>
+                            {% for key, value in status_choices %}
+                                <option value="{{ key }}"
+                                        {% if selected_status == key %}selected{% endif %}>{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if request.GET.search %}
+                            <input type="hidden" name="search" value="{{ request.GET.search }}">
+                        {% endif %}
                     </form>
-                </tr>
-            {% else %}
-                <tr id="customer-{{ customer.id }}">
-                    <td>{{ customer.full_name }}</td>
-                    <td>{{ customer.platform }}</td>
-                    <td>{{ customer.username }}</td>
-                    <td>{{ customer.phone_number }}</td>
-                    <td>
-                        <span class="status-badge status-{{ customer.status }}">
-                            {{ customer.get_status_display }}
-                        </span>
-                    </td>
-                    <td>{{ customer.assistant_name }}</td>
-                    <td>
-                        <div style="max-height: 75px; max-width: 500px; overflow-y: scroll; white-space: pre-line;">
-                            {{ customer.notes }}
-                        </div>
-                    </td>
-                    <td>{{ customer.created_at|date:"Y-m-d H:i" }}</td>
-                    <td>
-                        <form method="POST" style="display:inline;">
-                            {% csrf_token %}
-                            <input type="hidden" name="edit_id" value="{{ customer.id }}">
-                            <button type="submit" class="btn btn-warning btn-sm">
-                                <i class="fas fa-pen"></i>
-                            </button>
-                        </form>
-                    </td>
-                    <td>
-                        <a href="{% url 'delete_customer' customer.id %}" class="btn btn-danger btn-sm"
-                           onclick="return confirm('Are you sure?')">
-                            <i class="fas fa-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Platform</th>
+                            <th>Username</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Assistant</th>
+                            <th>Notes</th>
+                            <th>Created</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for customer in customers %}
+                            {% if edit_id == customer.id %}
+                                <tr id="customer-{{ customer.id }}">
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="edit_id" value="{{ customer.id }}">
+                                        <td>
+                                            <input type="text" name="full_name" value="{{ customer.full_name }}"
+                                                   class="form-control white-input" placeholder="Full Name"
+                                                   id="floatingFullName">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="platform" value="{{ customer.platform }}"
+                                                   class="form-control" placeholder="Platform" id="floatingPlatform">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="username" value="{{ customer.username }}"
+                                                   class="form-control" placeholder="Username" id="floatingUsername">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="phone_number" value="{{ customer.phone_number }}"
+                                                   class="form-control" placeholder="Phone Number"
+                                                   id="floatingPhoneNumber">
+                                        </td>
+                                        <td>
+                                            <select name="status" class="form-select" id="floatingStatus">
+                                                {% for key, val in customer.STATUS_CHOICES %}
+                                                    <option value="{{ key }}"
+                                                            {% if customer.status == key %}selected{% endif %}>{{ val }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="assistant_name"
+                                                   value="{{ customer.assistant_name }}"
+                                                   class="form-control" placeholder="Assistant Name"
+                                                   id="floatingAssistant">
+                                        </td>
+                                        <td>
+                                            <textarea name="notes" class="form-control" placeholder="Notes..."
+                                                      id="floatingNotes"
+                                                      style="height: 100px;">{{ customer.notes }}</textarea>
+                                        </td>
+                                        <td>{{ customer.created_at|date:"Y-m-d H:i" }}</td>
+                                        <td>
+                                            <button type="submit" name="save_edit" class="btn btn-success btn-sm">
+                                                <i class="fas fa-save"></i>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm delete-customer"
+                                                    data-customer-id="{{ customer.id }}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </form>
+                                </tr>
+                            {% else %}
+                                <tr id="customer-{{ customer.id }}">
+                                    <td>{{ customer.full_name }}</td>
+                                    <td>{{ customer.platform }}</td>
+                                    <td>{{ customer.username }}</td>
+                                    <td>{{ customer.phone_number }}</td>
+                                    <td>
+                                        <span class="status-badge status-{{ customer.status }}">
+                                            {{ customer.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ customer.assistant_name }}</td>
+                                    <td>
+                                        <div style="max-height: 75px; max-width: 500px; overflow-y: scroll; white-space: pre-line;">
+                                            {{ customer.notes }}
+                                        </div>
+                                    </td>
+                                    <td>{{ customer.created_at|date:"Y-m-d H:i" }}</td>
+                                    <td>
+                                        <form method="POST" style="display:inline;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="edit_id" value="{{ customer.id }}">
+                                            <button type="submit" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-pen"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm delete-customer"
+                                                data-customer-id="{{ customer.id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -390,6 +707,34 @@
 <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js' %}"></script>
 <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
 <script>
+    document.querySelectorAll('.delete-customer').forEach(button => {
+        button.addEventListener('click', function (e) {
+            if (confirm('Are you sure?')) {
+                const customerId = this.getAttribute('data-customer-id');
+                fetch('/c/crm/', {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({id: customerId}),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            this.closest('tr').remove();
+                        } else {
+                            alert(data.message || 'Failed to delete customer.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while deleting.');
+                    });
+            }
+        });
+    });
+
     // Save the scroll position before the form is submitted
     if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';
@@ -407,5 +752,254 @@
     }
 </script>
 
+<script>
+    // Enhanced JavaScript for Professional CRM Stats
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add click-to-filter functionality to stats cards
+        const statsCards = document.querySelectorAll('.stats-card');
+        const statusSelect = document.querySelector('select[name="status"]');
+
+        // Status mapping for filtering
+        const statusMapping = {
+            'Total Customers': '',
+            'Need to Call': 'need_to_call',
+            'Contacted': 'contacted',
+            'Projects Started': 'project_started',
+            'In Progress': 'continuing',
+            'Completed': 'finished',
+            'Rejected': 'rejected'
+        };
+
+        statsCards.forEach(card => {
+            card.addEventListener('click', function () {
+                // Get the status text from the card
+                const statusText = this.querySelector('small').textContent;
+                const statusValue = statusMapping[statusText];
+
+                if (statusSelect && statusValue !== undefined) {
+                    // Update the select dropdown
+                    statusSelect.value = statusValue;
+
+                    // Trigger the form submission to filter results
+                    statusSelect.form.submit();
+
+                    // Visual feedback
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                }
+            });
+
+            // Add hover effect tooltip
+            card.setAttribute('title', 'Click to filter by this status');
+            card.style.cursor = 'pointer';
+        });
+
+        // Add real-time update animation for stats
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stats-card h3');
+            counters.forEach(counter => {
+                const target = parseInt(counter.textContent);
+                let current = 0;
+                const increment = target / 20; // Animate over 20 steps
+
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current);
+                    }
+                }, 50);
+            });
+        }
+
+        // Add loading skeleton effect for new data
+        function showLoadingSkeleton() {
+            const statsContainer = document.querySelector('.row.g-3');
+            statsContainer.style.opacity = '0.6';
+            statsContainer.style.pointerEvents = 'none';
+
+            setTimeout(() => {
+                statsContainer.style.opacity = '1';
+                statsContainer.style.pointerEvents = 'auto';
+                animateCounters();
+            }, 500);
+        }
+
+        // Add notification for status changes
+        function showStatusNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = `
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        `;
+            notification.innerHTML = `
+            <i class="fas fa-info-circle me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+
+            document.body.appendChild(notification);
+
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+
+        // Enhanced delete functionality with stats update
+        const originalDeleteFunctions = document.querySelectorAll('.delete-customer');
+        originalDeleteFunctions.forEach(button => {
+            const originalClick = button.onclick;
+            button.addEventListener('click', function (e) {
+                if (confirm('Are you sure you want to delete this customer?')) {
+                    // Show loading state
+                    showLoadingSkeleton();
+
+                    // After successful deletion, show notification
+                    setTimeout(() => {
+                        showStatusNotification('Customer deleted successfully', 'success');
+                    }, 600);
+                }
+            });
+        });
+
+        // Add keyboard shortcuts for common actions
+        document.addEventListener('keydown', function (e) {
+            // Ctrl + F for search focus
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                const searchInput = document.querySelector('input[name="search"]');
+                if (searchInput) {
+                    searchInput.focus();
+                    searchInput.select();
+                }
+            }
+
+            // Ctrl + A for add customer (focus first form field)
+            if (e.ctrlKey && e.key === 'a') {
+                e.preventDefault();
+                const firstFormField = document.querySelector('#floatingFullName');
+                if (firstFormField) {
+                    firstFormField.focus();
+                    firstFormField.scrollIntoView({behavior: 'smooth', block: 'center'});
+                }
+            }
+        });
+
+        // Add progress bar animation on page load
+        setTimeout(() => {
+            const progressBars = document.querySelectorAll('.progress-bar');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                bar.style.transition = 'width 1s ease-out';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 100);
+            });
+        }, 300);
+
+        // Add health score calculation animation
+        const healthScoreBar = document.querySelector('.progress .progress-bar.bg-success');
+        if (healthScoreBar) {
+            const targetWidth = healthScoreBar.style.width;
+            healthScoreBar.style.width = '0%';
+            setTimeout(() => {
+                healthScoreBar.style.width = targetWidth;
+            }, 800);
+        }
+    });
+
+    // Add CSS for enhanced interactions
+    const enhancedStyles = `
+<style>
+/* Enhanced interaction styles */
+.stats-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.stats-card:hover::before {
+    left: 100%;
+}
+
+/* Loading skeleton */
+@keyframes skeleton-loading {
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+/* Enhanced tooltips */
+.stats-card[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    transition: all 0.3s ease;
+}
+
+/* Enhanced focus states */
+.form-control:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    border-color: #86b7fe;
+}
+
+/* Better mobile responsiveness */
+@media (max-width: 576px) {
+    .stats-card {
+        margin-bottom: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem !important;
+    }
+}
+</style>
+`;
+
+    // Inject enhanced styles
+    document.head.insertAdjacentHTML('beforeend', enhancedStyles);
+</script>
 </body>
 </html>
