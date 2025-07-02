@@ -1,24 +1,25 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from cims import settings
-from main.models import  UserPagePermission
+from main.models import UserPagePermission
 
 from . import models
 from .models import Customer
 from .forms import CustomerForm
 from .views import company_code_check
-
+import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Customer
 from ceo.serializers import CustomerSerializer
+from django.http import JsonResponse
+
 
 @login_required(login_url='')
-
 def crm_view(request):
     form = CustomerForm()
     edit_id = request.POST.get('edit_id')
@@ -40,11 +41,28 @@ def crm_view(request):
                 return redirect(f"{reverse('crm')}#customer-{new_customer.id}")
         elif 'see_all' in request.POST:
             show_all = True
+        elif 'delete_id' in request.POST:
+            customer = get_object_or_404(Customer, pk=request.POST.get('delete_id'))
+            customer.delete()
+            return redirect(reverse('crm'))
+
+    if request.method == 'DELETE':
+        try:
+            data = json.loads(request.body.decode('utf-8'))
+            customer_id = data.get('id')
+            if not customer_id:
+                return JsonResponse({'status': 'error', 'message': 'Customer ID is required'}, status=400)
+            customer = get_object_or_404(Customer, pk=customer_id)
+            customer.delete()
+            return JsonResponse({'status': 'success'}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
     query = request.GET.get('search')
-    selected_status = request.GET.get('status')  # Get the selected status from GET parameters
+    selected_status = request.GET.get('status')
 
-    # Initialize the customer queryset
     if query and query.strip():
         customers = Customer.objects.filter(
             Q(full_name__icontains=query) |
@@ -54,15 +72,39 @@ def crm_view(request):
             Q(assistant_name__icontains=query) |
             Q(status__icontains=query)
         )
-    elif show_all:
+    elif show_all or not selected_status:
         customers = Customer.objects.all()
     else:
-        # Default to 'contacted' status if no status is selected
-        customers = Customer.objects.filter(status='contacted') if not selected_status else Customer.objects.filter(status=selected_status)
+        customers = Customer.objects.filter(status=selected_status)
 
     customers = customers.order_by('-created_at')
 
-    # Fetch and sort user permissions
+    # Calculate status statistics
+    status_stats = Customer.objects.aggregate(
+        total_customers=Count('id'),
+        need_to_call=Count('id', filter=Q(status='need_to_call')),
+        contacted=Count('id', filter=Q(status='contacted')),
+        project_started=Count('id', filter=Q(status='project_started')),
+        continuing=Count('id', filter=Q(status='continuing')),
+        finished=Count('id', filter=Q(status='finished')),
+        rejected=Count('id', filter=Q(status='rejected'))
+    )
+
+    # Get dynamic status counts for any additional statuses
+    status_counts = Customer.objects.values('status').annotate(
+        count=Count('status')
+    ).order_by('status')
+
+    # Convert to dictionary for easier template access
+    status_dict = {item['status']: item['count'] for item in status_counts}
+
+    # Calculate percentages (optional)
+    total = status_stats['total_customers']
+    status_percentages = {}
+    if total > 0:
+        for status_key, count in status_dict.items():
+            status_percentages[status_key] = round((count / total) * 100, 1)
+
     user = request.user
     permissions = UserPagePermission.objects.filter(user=user).values_list('page_name', flat=True)
     page_order = ['ceo', 'payment_list', 'project-toggle', 'crm', 'finance_list']
@@ -83,11 +125,12 @@ def crm_view(request):
         'customers': customers,
         'edit_id': int(edit_id) if edit_id else None,
         'permissions': modified_permissions,
-        'status_choices': Customer.STATUS_CHOICES,  # Pass status choices to template
-        'selected_status': selected_status,  # Pass selected status to template
+        'status_choices': Customer.STATUS_CHOICES,
+        'selected_status': selected_status,
+        'status_stats': status_stats,
+        'status_dict': status_dict,
+        'status_percentages': status_percentages,
     })
-
-
 
 
 @login_required(login_url='')
